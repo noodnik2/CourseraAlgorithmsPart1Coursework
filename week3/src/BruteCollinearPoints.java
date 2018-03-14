@@ -1,7 +1,3 @@
-import edu.princeton.cs.algs4.In;
-import edu.princeton.cs.algs4.StdDraw;
-import edu.princeton.cs.algs4.StdRandom;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -46,6 +42,7 @@ import java.util.List;
  *      number of line segments returned.
  *  </pre>
  *  @author Marty Ross
+ *  @see "external test harness: CollinearPointsTester"
  */
 public class BruteCollinearPoints {
 
@@ -133,53 +130,6 @@ public class BruteCollinearPoints {
      */
     public LineSegment[] segments() {
         return segments.clone();
-    }
-
-
-    /**
-     *  @param args file name
-     */
-    public static void main(final String[] args) {
-
-        if (args.length != 1) {
-            throw new IllegalArgumentException("no file specified");
-        }
-
-        final In in = new In(args[0]);
-        final int nPoints = in.readInt();
-        final Point[] points = new Point[nPoints];
-        for (int i = 0; i < nPoints; i++) {
-            final Point p = new Point(in.readInt(), in.readInt());
-//            StdOut.println(p);
-            points[i] = p;
-        }
-
-        StdDraw.enableDoubleBuffering();
-        StdDraw.setXscale(0, 32768);
-        StdDraw.setYscale(0, 32768);
-
-        final BruteCollinearPoints bcp = new BruteCollinearPoints(points);
-        final LineSegment[] segments = bcp.segments();
-//        StdOut.println("nSegments = " + segments.length);
-
-        for (final LineSegment segment : segments) {
-//            StdOut.println(segment);
-            final int r = StdRandom.uniform(50, 200);
-            final int g = StdRandom.uniform(50, 200);
-            final int b = StdRandom.uniform(50, 200);
-            // try to distinguish segments from one-another
-            StdDraw.setPenColor(r, g, b);
-            segment.draw();
-        }
-
-        StdDraw.setPenColor(0, 0, 0);
-        StdDraw.setPenRadius(0.01);
-        for (final Point p : points) {
-            p.draw();
-        }
-
-        StdDraw.show();
-
     }
 
 }
