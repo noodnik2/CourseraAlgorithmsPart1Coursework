@@ -1,6 +1,8 @@
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  *  Princeton/Coursera Algorithms Part 1
@@ -50,6 +52,35 @@ public class BruteCollinearPoints {
     private final LineSegment[] segments;
 
     /**
+     *  Composite key used to find longest segments including a point
+     */
+    private class PointSlope {
+
+        /** point */
+        final Point p;
+
+        /** slope of a segment passing through the point */
+        final double s;
+
+        PointSlope(final Point p, final double s) {
+            this.p = p;
+            this.s = s;
+        }
+
+        public int hashCode() {
+            return p.hashCode() + Double.hashCode(s);
+        }
+
+        public boolean equals(final Object o) {
+            if (!(o instanceof PointSlope)) {
+                return false;
+            }
+            final PointSlope otherPs = (PointSlope) o;
+            return p.equals(otherPs.p) && s == otherPs.s;
+        }
+    }
+
+    /**
      *  Finds all line segments containing 4 collinear points
      *  @param inPoints set of input points to be considered
      */
@@ -79,7 +110,7 @@ public class BruteCollinearPoints {
 
         // find all sets of 4 collinear points via brute force permutation
 
-        final List<LineSegment> foundSegments = new ArrayList<>();
+        final Map<PointSlope, Point> maxPtSlopeSegs = new HashMap<>();
         for (int p = 0; p < points.length - 3; p++) {
             final Point pointP = points[p];
 
@@ -94,23 +125,38 @@ public class BruteCollinearPoints {
                         continue;
                     }
 
-                    Point maxPoint = null;
                     for (int s = r + 1; s < points.length; s++) {
                         final Point pointS = points[s];
 
-                        if (p2qSlope == pointP.slopeTo(pointS)) {
-                            if (maxPoint == null || pointS.compareTo(maxPoint) > 0) {
-                                maxPoint = pointS;
-                            }
+                        if (p2qSlope != pointP.slopeTo(pointS)) {
+                            continue;
                         }
 
+                        final PointSlope ps = new PointSlope(pointP, p2qSlope);
+                        final Point psMaxPt = maxPtSlopeSegs.get(ps);
+                        if (psMaxPt == null || psMaxPt.compareTo(pointS) < 0) {
+                            maxPtSlopeSegs.put(ps, pointS);
+                        }
                     }
-                    if (maxPoint != null) {
-                        foundSegments.add(new LineSegment(pointP, maxPoint));
-                    }
-
                 }
             }
+        }
+
+        // construct the longest line segment(s) using the minimum points
+        final Map<PointSlope, Point> minPtSlopeSegs = new HashMap<>();
+        for (final Map.Entry<PointSlope, Point> e : maxPtSlopeSegs.entrySet()) {
+            final PointSlope ps = new PointSlope(e.getValue(), e.getKey().s);
+            final Point psMinPt = minPtSlopeSegs.get(ps);
+            if (psMinPt == null || psMinPt.compareTo(e.getKey().p) > 0) {
+                minPtSlopeSegs.put(ps, e.getKey().p);
+            }
+        }
+
+        // construct the longest line segment(s) using the maximum points
+        final List<LineSegment> foundSegments = new ArrayList<>();
+        for (final Map.Entry<PointSlope, Point> e : minPtSlopeSegs.entrySet()) {
+//            StdOut.printf("\n%s-%s", e.getKey().p, e.getValue());
+            foundSegments.add(new LineSegment(e.getKey().p, e.getValue()));
         }
 
         // return all found segments
