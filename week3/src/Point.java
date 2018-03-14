@@ -11,7 +11,6 @@
 import edu.princeton.cs.algs4.StdDraw;
 
 import java.util.Comparator;
-import java.util.function.BiConsumer;
 
 public class Point implements Comparable<Point> {
 
@@ -143,6 +142,24 @@ public class Point implements Comparable<Point> {
     public String toString() {
         /* DO NOT MODIFY */
         return "(" + x + ", " + y + ")";
+    }
+
+
+    // functional interface used only for testing purposes
+
+    /**
+     *  Two-parameter consumer
+     *  @param <P1T> type of first parameter
+     *  @param <P2T> type of second parameter
+     */
+    interface BiConsumer<P1T, P2T> {
+
+        /**
+         *  Performs operation on given arguments
+         *  @param p1v first parameter value
+         *  @param p2v first parameter value
+         */
+        void accept(P1T p1v, P2T p2v);
     }
 
     /**
