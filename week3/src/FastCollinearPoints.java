@@ -76,44 +76,53 @@ public class FastCollinearPoints {
             throw new IllegalArgumentException();
         }
 
+        // check for null points
+        for (final Point inPoint : inPoints) {
+            if (inPoint == null) {
+                throw new IllegalArgumentException("null point");
+            }
+        }
+
         final Point[] points = inPoints.clone();
         Arrays.sort(points);    // sort the points in ascending order
 
-        // check for invalid points
+        // check for repeated points
         for (int p = 0; p < points.length - 1; p++) {
-            final Point point = points[p];
-            if (point == null) {
-                throw new IllegalArgumentException("null point");
-            }
-            if (point.compareTo(points[p + 1]) == 0) {
+            if (points[p].compareTo(points[p + 1]) == 0) {
                 throw new IllegalArgumentException("repeated point");
             }
         }
-        if (points.length > 0 && points[points.length - 1] == null) {
-            throw new IllegalArgumentException("null point");
-        }
 
-        // find all sets of 4 collinear points by sorting slopes
-
+        // find all maximel sets of n > 4 collinear points by sorting slopes
 
         final List<LineSegment> foundSegments = new ArrayList<>();
         for (final Point point : points) {
-            final Point[] slopeOrderedPoints = points.clone();
-            Arrays.sort(slopeOrderedPoints, point.slopeOrder());
-            for (int j = 1; j < slopeOrderedPoints.length - 2; j++) {
-                final double si2j = point.slopeTo(slopeOrderedPoints[j]);
+            final Point[] soPoints = points.clone();
+            Arrays.sort(soPoints, point.slopeOrder());
+            Point maxPoint = null;
+            for (int j = 1; j < soPoints.length - 2; j++) {
+                final Point soPointJp0 = soPoints[j];
+                final Point soPointJp1 = soPoints[j + 1];
+                final Point soPointJp2 = soPoints[j + 2];
+                final double sp2jp0 = point.slopeTo(soPointJp0);
+                final double sp2jp1 = point.slopeTo(soPointJp1);
+                final double sp2jp2 = point.slopeTo(soPointJp2);
                 if (
                     // have three (or more) equal slopes
-                    (si2j == point.slopeTo(slopeOrderedPoints[j + 1]))
-                        && (si2j == point.slopeTo(slopeOrderedPoints[j + 2]))
-                        // and points are in strict order
-                        && point.compareTo(slopeOrderedPoints[j]) < 1
-                        && slopeOrderedPoints[j].compareTo(slopeOrderedPoints[j + 1]) < 1
-                        && slopeOrderedPoints[j + 1].compareTo(slopeOrderedPoints[j + 2]) < 1
-                    ) {
+                    (sp2jp0 == sp2jp1)
+                 && (sp2jp0 == sp2jp2)
+                    // and points are in strict order
+                 && point.compareTo(soPointJp0) < 1
+                 && soPointJp0.compareTo(soPointJp1) < 1
+                 && soPointJp1.compareTo(soPointJp2) < 1
+                 && (maxPoint == null || maxPoint.compareTo(soPointJp2) > 0)
+                ) {
                     // then it's a valid segment to record
-                    foundSegments.add(new LineSegment(point, slopeOrderedPoints[j + 2]));
+                    maxPoint = soPointJp2;
                 }
+            }
+            if (maxPoint != null) {
+                foundSegments.add(new LineSegment(point, maxPoint));
             }
 
         }

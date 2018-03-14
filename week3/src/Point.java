@@ -24,22 +24,6 @@ public class Point implements Comparable<Point> {
 
 
     //
-    //  Private class methods
-    //
-
-    /**
-     *  @param os object(s) to be checked
-     */
-    private static void assertNotNull(final Object... os) {
-        for (final Object o : os) {
-            if (o == null) {
-                throw new IllegalArgumentException();
-            }
-        }
-    }
-
-
-    //
     //  Public instance construction
     //
 
@@ -116,7 +100,6 @@ public class Point implements Comparable<Point> {
      *         argument point
      */
     public int compareTo(final Point that) {
-        assertNotNull(that);
         if (this.y == that.y) {
             return this.x - that.x;
         }
@@ -152,7 +135,8 @@ public class Point implements Comparable<Point> {
      *  @param <P1T> type of first parameter
      *  @param <P2T> type of second parameter
      */
-    interface BiConsumer<P1T, P2T> {
+    @FunctionalInterface
+    private interface BiConsumer<P1T, P2T> {
 
         /**
          *  Performs operation on given arguments

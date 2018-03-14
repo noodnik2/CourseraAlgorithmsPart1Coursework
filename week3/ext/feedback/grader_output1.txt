@@ -1,0 +1,119 @@
+See the Assessment Guide for information on how to interpret this report.
+
+ASSESSMENT SUMMARY
+
+Compilation:  PASSED
+API:          FAILED (1 error)
+
+Findbugs:     No tests available for autograding.
+PMD:          PASSED
+Checkstyle:   No tests available for autograding.
+
+Correctness:  No tests available for autograding.
+Memory:       No tests available for autograding.
+Timing:       No tests available for autograding.
+
+Aggregate score: 5.00%
+[Compilation: 5%, API: 5%, Findbugs: 0%, PMD: 0%, Checkstyle: 0%, Correctness: 60%, Memory: 10%, Timing: 20%]
+
+ASSESSMENT DETAILS
+
+The following files were submitted:
+----------------------------------
+5.9K Mar 14 07:34 BruteCollinearPoints.java
+6.5K Mar 14 07:34 FastCollinearPoints.java
+6.6K Mar 14 07:34 Point.java
+
+
+********************************************************************************
+*  COMPILING
+********************************************************************************
+
+
+% javac Point.java
+*-----------------------------------------------------------
+
+% javac BruteCollinearPoints.java
+*-------------------------------------See the Assessment Guide for information on how to interpret this report.
+
+ASSESSMENT SUMMARY
+
+Compilation:  PASSED
+API:          FAILED (1 error)
+
+Findbugs:     No tests available for autograding.
+PMD:          PASSED
+Checkstyle:   No tests available for autograding.
+
+Correctness:  No tests available for autograding.
+Memory:       No tests available for autograding.
+Timing:       No tests available for autograding.
+
+Aggregate score: 5.00%
+[Compilation: 5%, API: 5%, Findbugs: 0%, PMD: 0%, Checkstyle: 0%, Correctness: 60%, Memory: 10%, Timing: 20%]
+
+ASSESSMENT DETAILS
+
+The following files were submitted:
+----------------------------------
+5.9K Mar 14 07:34 BruteCollinearPoints.java
+6.5K Mar 14 07:34 FastCollinearPoints.java
+6.6K Mar 14 07:34 Point.java
+
+
+********************************************************************************
+*  COMPILING
+********************************************************************************
+
+
+% javac Point.java
+*-----------------------------------------------------------
+
+% javac BruteCollinearPoints.java
+*-----------------------------------------------------------
+
+% javac FastCollinearPoints.java
+*-----------------------------------------------------------
+
+
+================================================================
+
+
+Checking the APIs of your programs.
+*-----------------------------------------------------------
+Point:
+The following nested classes must either be removed or made private:
+  * BiConsumer
+
+
+BruteCollinearPoints:
+
+FastCollinearPoints:
+
+================================================================
+
+
+ABORTING: either the compilation or API test failed.----------------------
+
+% javac FastCollinearPoints.java
+*-----------------------------------------------------------
+
+
+================================================================
+
+
+Checking the APIs of your programs.
+*-----------------------------------------------------------
+Point:
+The following nested classes must either be removed or made private:
+  * BiConsumer
+
+
+BruteCollinearPoints:
+
+FastCollinearPoints:
+
+================================================================
+
+
+ABORTING: either the compilation or API test failed.

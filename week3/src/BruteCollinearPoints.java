@@ -63,21 +63,21 @@ public class BruteCollinearPoints {
             throw new IllegalArgumentException();
         }
 
+        // check for null points
+        for (final Point inPoint : inPoints) {
+            if (inPoint == null) {
+                throw new IllegalArgumentException("null point");
+            }
+        }
+
         final Point[] points = inPoints.clone();
         Arrays.sort(points);    // sort the points in ascending order
 
-        // check for invalid points
+        // check for repeated points
         for (int p = 0; p < points.length - 1; p++) {
-            final Point point = points[p];
-            if (point == null) {
-                throw new IllegalArgumentException("null point");
-            }
-            if (point.compareTo(points[p + 1]) == 0) {
+            if (points[p].compareTo(points[p + 1]) == 0) {
                 throw new IllegalArgumentException("repeated point");
             }
-        }
-        if (points.length > 0 && points[points.length - 1] == null) {
-            throw new IllegalArgumentException("null point");
         }
 
         // find all sets of 4 collinear points via brute force permutation
