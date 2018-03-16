@@ -150,6 +150,7 @@ public class CollinearPointsTester {
         StdOut.print("]");
 
         StdDraw.setPenColor(StdDraw.RED);
+        StdDraw.setPenRadius(0.003);
         for (final LineSegment segment : segments) {
             if (verbosity > 5) {
                 StdOut.println(segment);

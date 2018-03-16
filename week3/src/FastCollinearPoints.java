@@ -1,8 +1,10 @@
+import edu.princeton.cs.algs4.StdOut;
+
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
+import java.util.function.Consumer;
 
 /**
  *  Princeton/Coursera Algorithms Part 1
@@ -65,35 +67,6 @@ public class FastCollinearPoints {
     private final LineSegment[] segments;
 
     /**
-     *  Composite key used to find longest segments including a point
-     */
-    private class PointSlope {
-
-        /** point */
-        final Point p;
-
-        /** slope of a segment passing through the point */
-        final double s;
-
-        PointSlope(final Point p, final double s) {
-            this.p = p;
-            this.s = s;
-        }
-
-        public int hashCode() {
-            return p.hashCode() + Double.hashCode(s);
-        }
-
-        public boolean equals(final Object o) {
-            if (!(o instanceof PointSlope)) {
-                return false;
-            }
-            final PointSlope otherPs = (PointSlope) o;
-            return p.equals(otherPs.p) && s == otherPs.s;
-        }
-    }
-
-    /**
      *  Finds all maximal sets of n > 4 collinear points
      *  @param inPoints set of input points to be considered
      */
@@ -115,72 +88,80 @@ public class FastCollinearPoints {
         Arrays.sort(points);    // sort the points in ascending order
 
         // check for repeated points
-        for (int p = 0; p < points.length - 1; p++) {
-            if (points[p].compareTo(points[p + 1]) == 0) {
+        identifyRuns(
+            points,
+            Point::compareTo,
+            2,
+            r -> {
                 throw new IllegalArgumentException("repeated point");
             }
-        }
+        );
 
         // find all sets of >= 4 collinear points by sorting relative slopes
-        final Map<PointSlope, Point> maxPtSlopeSegs = new HashMap<>();
-        for (final Point point : points) {
+
+        final List<Point[]> colPointsList = new ArrayList<>();
+        for (final Point refPoint : points) {
+
+            // create copy of points, sorted by slope to "refPoint"
             final Point[] soPoints = points.clone();
+            Arrays.sort(soPoints, refPoint.slopeOrder());
 
-            Arrays.sort(soPoints, point.slopeOrder());
-            for (int j = 1; j < soPoints.length - 2; j++) {
-
-                // get the three next points with closest s to "point"
-                final Point soPointJp0 = soPoints[j];
-                final Point soPointJp1 = soPoints[j + 1];
-                final Point soPointJp2 = soPoints[j + 2];
-
-                // compare the points to each-other
-                final int pctj0 = point.compareTo(soPointJp0);
-                final int j0ctj1 = soPointJp0.compareTo(soPointJp1);
-                final int j1ctj2 = soPointJp1.compareTo(soPointJp2);
-                if (pctj0 >= 0 || j0ctj1 >= 0 || j1ctj2 >= 0) {
-                    // ignore point sequences not in canonical order
-                    continue;
+            // identify "runs" of 3 (or more) points having the same slope
+            identifyRuns(
+                soPoints,
+                refPoint.slopeOrder(),
+                3,
+                r -> {
+                    // for each run identified, created and add a sorted array
+                    // containing all collinear points to "colPointsList"
+                    final Point[] colPoints = new Point[1 + r.length];
+                    colPoints[0] = refPoint;
+                    for (int i = 0; i < r.length; i++) {
+                        colPoints[1 + i] = r[i];
+                    }
+                    Arrays.sort(colPoints);
+                    colPointsList.add(colPoints);
                 }
-
-                // compare the points' s relative to "point"
-                final double sp2jp0 = point.slopeTo(soPointJp0);
-                final double sp2jp1 = point.slopeTo(soPointJp1);
-                final double sp2jp2 = point.slopeTo(soPointJp2);
-                // ignore segments not sharing the same s with "point"
-                if (sp2jp0 != sp2jp1 || sp2jp0 != sp2jp2) {
-                    continue;
-                }
-
-                // collect the longest segment sharing the same point and s
-                final PointSlope ps = new PointSlope(point, sp2jp0);
-                final Point psMaxPt = maxPtSlopeSegs.get(ps);
-                if (psMaxPt == null || psMaxPt.compareTo(soPointJp2) < 0) {
-                    maxPtSlopeSegs.put(ps, soPointJp2);
-                }
-            }
-
+            );
         }
 
-        // construct the longest line segment(s) using the minimum points
-        final Map<PointSlope, Point> minPtSlopeSegs = new HashMap<>();
-        for (final Map.Entry<PointSlope, Point> e : maxPtSlopeSegs.entrySet()) {
-            final PointSlope ps = new PointSlope(e.getValue(), e.getKey().s);
-            final Point psMinPt = minPtSlopeSegs.get(ps);
-            if (psMinPt == null || psMinPt.compareTo(e.getKey().p) > 0) {
-                minPtSlopeSegs.put(ps, e.getKey().p);
-            }
+        // make an array out of "colPointsList"
+        final Point[][] colPointsArray = new Point[colPointsList.size()][];
+        for (int i = 0; i < colPointsArray.length; i++) {
+            colPointsArray[i] = colPointsList.get(i);
         }
 
-        // construct the longest line segment(s) using the maximum points
+        // add a line segment for each unique set of points in "colPointsArray"
         final List<LineSegment> foundSegments = new ArrayList<>();
-        for (final Map.Entry<PointSlope, Point> e : minPtSlopeSegs.entrySet()) {
-//            StdOut.printf("\n%s-%s", e.getKey().p, e.getValue());
-            foundSegments.add(new LineSegment(e.getKey().p, e.getValue()));
-        }
+        identifyRuns(
+            colPointsArray,
+            (l0, l1) -> {
+                final int l0Size = l0.length;
+                final int l1Size = l1.length;
+                for (int i = 0; i < Math.min(l0Size, l1Size); i++) {
+                    final int pc = l0[i].compareTo(l1[i]);
+                    if (pc != 0) {
+                        return pc;
+                    }
+                }
+                return Integer.compare(l0Size, l1Size);
+            },
+            1,
+            r -> {
+                final Point[] colPoints = r[0];
+//                StdOut.printf("\ncpl(%s),", Arrays.asList(colPoints));
+                foundSegments.add(
+                    new LineSegment(
+                        colPoints[0],
+                        colPoints[colPoints.length - 1]
+                    )
+                );
+            }
+        );
 
         // return all found segments
         segments = foundSegments.toArray(new LineSegment[0]);
+
     }
 
     /**
@@ -195,6 +176,88 @@ public class FastCollinearPoints {
      */
     public LineSegment[] segments() {
         return segments.clone();
+    }
+
+
+    //
+    //  Private class methods
+    //
+
+    /**
+     *  @param inputArray subject array
+     *  @param comparator used to sort a copy of {@code inputArray}
+     *  in order to detect "runs" of "equal" elements
+     *  @param minRunsize minimum size of a "run"
+     *  @param callback callback to receive each detected "run"
+     *  @param <T> type of array
+     */
+    private static <T> void identifyRuns(
+        final T[] inputArray,
+        final Comparator<T> comparator,
+        final int minRunsize,
+        final Consumer<T[]> callback
+    ) {
+
+        if (inputArray == null || inputArray.length == 0) {
+	        return;
+        }
+
+        final T[] sortedArray = inputArray.clone();
+        Arrays.sort(sortedArray, comparator);
+
+		int start = 0;
+	    T cv = sortedArray[0];
+
+		for (int end = 0; end < sortedArray.length; end++) {
+		    if (cv != null && comparator.compare(cv, sortedArray[end]) == 0) {
+		        // running
+		        continue;
+            }
+            if (end - start >= minRunsize) {
+		        callback.accept(Arrays.copyOfRange(sortedArray, start, end));
+            }
+            start = end;
+		    cv = sortedArray[end];
+        }
+
+        if (sortedArray.length - start >= minRunsize) {
+            callback.accept(
+                Arrays.copyOfRange(sortedArray, start, sortedArray.length)
+            );
+        }
+	}
+
+
+    //
+    //  Public class methods
+    //
+
+    /**
+     *  Performs basic edge-case testing
+     *  <p />
+     *  For more extensive testing, see {@link CollinearPointsTester}
+     *  @param args ignored
+     */
+    public static void main(final String[] args) {
+	    try {
+	        new FastCollinearPoints(null);
+	        throw new RuntimeException("didn't throw for null point");
+        } catch(final IllegalArgumentException ie) {
+	        StdOut.println("OK: null constructor arg");
+        }
+	    try {
+	        new FastCollinearPoints(new Point[] { null });
+	        throw new RuntimeException("didn't throw for null point");
+        } catch(final IllegalArgumentException ie) {
+	        StdOut.println("OK: null point");
+        }
+	    try {
+            final Point point = new Point(1, 2);
+            new FastCollinearPoints(new Point[] {point, point});
+	        throw new RuntimeException("didn't throw for duplicate point");
+        } catch(final IllegalArgumentException ie) {
+	        StdOut.println("OK: duplicate point");
+        }
     }
 
 }

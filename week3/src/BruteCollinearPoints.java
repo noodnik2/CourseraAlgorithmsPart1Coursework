@@ -1,3 +1,5 @@
+import edu.princeton.cs.algs4.StdOut;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -176,6 +178,34 @@ public class BruteCollinearPoints {
      */
     public LineSegment[] segments() {
         return segments.clone();
+    }
+
+    /**
+     *  Performs basic edge-case testing
+     *  <p />
+     *  For more extensive testing, see {@link CollinearPointsTester}
+     *  @param args ignored
+     */
+    public static void main(final String[] args) {
+	    try {
+	        new BruteCollinearPoints(null);
+	        throw new RuntimeException("didn't throw for null point");
+        } catch(final IllegalArgumentException ie) {
+	        StdOut.println("OK: null constructor arg");
+        }
+	    try {
+	        new BruteCollinearPoints(new Point[] { null });
+	        throw new RuntimeException("didn't throw for null point");
+        } catch(final IllegalArgumentException ie) {
+	        StdOut.println("OK: null point");
+        }
+	    try {
+            final Point point = new Point(1, 2);
+            new BruteCollinearPoints(new Point[] {point, point});
+	        throw new RuntimeException("didn't throw for duplicate point");
+        } catch(final IllegalArgumentException ie) {
+	        StdOut.println("OK: duplicate point");
+        }
     }
 
 }

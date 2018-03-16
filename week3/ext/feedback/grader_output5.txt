@@ -1,0 +1,114 @@
+See the Assessment Guide for information on how to interpret this report.
+
+ASSESSMENT SUMMARY
+
+Compilation:  PASSED
+API:          PASSED
+
+Findbugs:     FAILED (2 warnings)
+PMD:          PASSED
+Checkstyle:   FAILED (4 errors, 12 warnings)
+
+Correctness:  No tests available for autograding.
+Memory:       No tests available for autograding.
+Timing:       No tests available for autograding.
+
+Aggregate score: 10.00%
+[Compilation: 5%, API: 5%, Findbugs: 0%, PMD: 0%, Checkstyle: 0%, Correctness: 60%, Memory: 10%, Timing: 20%]
+
+ASSESSMENT DETAILS
+
+The following files were submitted:
+----------------------------------
+6.1K Mar 14 22:56 BruteCollinearPoints.java
+7.3K Mar 14 22:56 FastCollinearPoints.java
+6.3K Mar 14 22:56 Point.java
+
+
+********************************************************************************
+*  COMPILING
+********************************************************************************
+
+
+% javac Point.java
+*-----------------------------------------------------------
+
+% javac BruteCollinearPoints.java
+*-----------------------------------------------------------
+
+% javac FastCollinearPoints.java
+*-----------------------------------------------------------
+
+
+================================================================
+
+
+Checking the APIs of your programs.
+*-----------------------------------------------------------
+Point:
+
+BruteCollinearPoints:
+
+FastCollinearPoints:
+
+================================================================
+
+
+********************************************************************************
+*  CHECKING STYLE AND COMMON BUG PATTERNS
+********************************************************************************
+
+
+% findbugs *.class
+*-----------------------------------------------------------
+L D FE_FLOATING_POINT_EQUALITY FE: Tests for exact floating-point equality. Because floating-point calculations may involve rounding, the calculated values may be imprecise.  At BruteCollinearPoints.java:[line 124]
+L D FE_FLOATING_POINT_EQUALITY FE: Tests for exact floating-point equality. Because floating-point calculations may involve rounding, the calculated values may be imprecise.  At FastCollinearPoints.java:[line 151]
+Warnings generated: 2
+
+
+================================================================
+
+
+% pmd .
+*-----------------------------------------------------------
+
+
+================================================================
+
+
+% checkstyle *.java
+*-----------------------------------------------------------
+[WARN] BruteCollinearPoints.java:74:44: Do not use the letter 'o' as a parameter variable name. It is hard to distinguish from the number '0'. [ParameterName]
+[WARN] BruteCollinearPoints.java:75:21: Do not use the 'instanceof' operator in this course. Use 'getClass()' to compare classes. [IllegalToken]
+[WARN] FastCollinearPoints.java:87:44: Do not use the letter 'o' as a parameter variable name. It is hard to distinguish from the number '0'. [ParameterName]
+[WARN] FastCollinearPoints.java:88:21: Do not use the 'instanceof' operator in this course. Use 'getClass()' to compare classes. [IllegalToken]
+[WARN] Point.java:18:7: The comment is empty. [EmptyComment]
+[WARN] Point.java:20:7: The comment is empty. [EmptyComment]
+[WARN] Point.java:26:7: The comment is empty. [EmptyComment]
+[WARN] Point.java:28:7: The comment is empty. [EmptyComment]
+[WARN] Point.java:43:7: The comment is empty. [EmptyComment]
+[WARN] Point.java:45:7: The comment is empty. [EmptyComment]
+Checkstyle ends with 0 errors and 10 warnings.
+
+% custom checkstyle checks for Point.java
+*-----------------------------------------------------------
+
+% custom checkstyle checks for BruteCollinearPoints.java
+*-----------------------------------------------------------
+[ERROR] BruteCollinearPoints.java:113:15: Do not use the 'Map' data type on this assignment. Symbol tables, maps, and sets have not yet been introdcued in the course. Instead, use sorting. [IllegalType]
+[ERROR] BruteCollinearPoints.java:146:15: Do not use the 'Map' data type on this assignment. Symbol tables, maps, and sets have not yet been introdcued in the course. Instead, use sorting. [IllegalType]
+[WARN] BruteCollinearPoints.java:49:1: Defining a nested class in this program suggests poor design. [Design]
+Checkstyle ends with 2 errors and 1 warning.
+
+% custom checkstyle checks for FastCollinearPoints.java
+*-----------------------------------------------------------
+[ERROR] FastCollinearPoints.java:125:15: Do not use the 'Map' data type on this assignment. Symbol tables, maps, and sets have not yet been introdcued in the course. Instead, use sorting. [IllegalType]
+[ERROR] FastCollinearPoints.java:166:15: Do not use the 'Map' data type on this assignment. Symbol tables, maps, and sets have not yet been introdcued in the course. Instead, use sorting. [IllegalType]
+[WARN] FastCollinearPoints.java:62:1: Defining a nested class in this program suggests poor design. [Design]
+Checkstyle ends with 2 errors and 1 warning.
+
+
+================================================================
+
+
+ABORTING: you must fix any Checkstyle errors (not warnings).
