@@ -1,0 +1,16 @@
+/home/mross/bin/jdk1.8.0_151/bin/java -javaagent:/snap/intellij-idea-ultimate/34/lib/idea_rt.jar=44075:/snap/intellij-idea-ultimate/34/bin -Dfile.encoding=UTF-8 -classpath /home/mross/bin/jdk1.8.0_151/jre/lib/charsets.jar:/home/mross/bin/jdk1.8.0_151/jre/lib/deploy.jar:/home/mross/bin/jdk1.8.0_151/jre/lib/ext/cldrdata.jar:/home/mross/bin/jdk1.8.0_151/jre/lib/ext/dnsns.jar:/home/mross/bin/jdk1.8.0_151/jre/lib/ext/jaccess.jar:/home/mross/bin/jdk1.8.0_151/jre/lib/ext/jfxrt.jar:/home/mross/bin/jdk1.8.0_151/jre/lib/ext/localedata.jar:/home/mross/bin/jdk1.8.0_151/jre/lib/ext/nashorn.jar:/home/mross/bin/jdk1.8.0_151/jre/lib/ext/sunec.jar:/home/mross/bin/jdk1.8.0_151/jre/lib/ext/sunjce_provider.jar:/home/mross/bin/jdk1.8.0_151/jre/lib/ext/sunpkcs11.jar:/home/mross/bin/jdk1.8.0_151/jre/lib/ext/zipfs.jar:/home/mross/bin/jdk1.8.0_151/jre/lib/javaws.jar:/home/mross/bin/jdk1.8.0_151/jre/lib/jce.jar:/home/mross/bin/jdk1.8.0_151/jre/lib/jfr.jar:/home/mross/bin/jdk1.8.0_151/jre/lib/jfxswt.jar:/home/mross/bin/jdk1.8.0_151/jre/lib/jsse.jar:/home/mross/bin/jdk1.8.0_151/jre/lib/management-agent.jar:/home/mross/bin/jdk1.8.0_151/jre/lib/plugin.jar:/home/mross/bin/jdk1.8.0_151/jre/lib/resources.jar:/home/mross/bin/jdk1.8.0_151/jre/lib/rt.jar:/home/mross/Marty/proj/eclipsews_oxygen/CourseraAlgorithmsPart1Coursework/out/production/week3:/home/mross/Marty/proj/eclipsews_oxygen/CourseraAlgorithmsPart1Coursework/week3/ext/lib/algs4.jar CollinearPointsTester brute input10 input20 input40 input50 input6 input8 input9 input56 input80 input100 input200 input400 rs1423
+input10 (10 points) week3/ext/collinear/input10.txt [0.100 sec/4 seg] -> week3/out/brute/input10.png
+input20 (20 points) week3/ext/collinear/input20.txt [0.025 sec/13 seg] -> week3/out/brute/input20.png
+input40 (40 points) week3/ext/collinear/input40.txt [0.034 sec/4 seg] -> week3/out/brute/input40.png
+input50 (50 points) week3/ext/collinear/input50.txt [0.018 sec/11 seg] -> week3/out/brute/input50.png
+input6 (6 points) week3/ext/collinear/input6.txt [0.001 sec/3 seg] -> week3/out/brute/input6.png
+input8 (8 points) week3/ext/collinear/input8.txt [0.001 sec/2 seg] -> week3/out/brute/input8.png
+input9 (9 points) week3/ext/collinear/input9.txt [0.006 sec/21 seg] -> week3/out/brute/input9.png
+input56 (56 points) week3/ext/collinear/input56.txt [0.034 sec/44 seg] -> week3/out/brute/input56.png
+input80 (80 points) week3/ext/collinear/input80.txt [0.048 sec/53 seg] -> week3/out/brute/input80.png
+input100 (100 points) week3/ext/collinear/input100.txt [0.034 sec/163 seg] -> week3/out/brute/input100.png
+input200 (200 points) week3/ext/collinear/input200.txt [0.120 sec/4 seg] -> week3/out/brute/input200.png
+input400 (400 points) week3/ext/collinear/input400.txt [0.606 sec/14 seg] -> week3/out/brute/input400.png
+rs1423 (1423 points) week3/ext/collinear/rs1423.txt [12.615 sec/443 seg] -> week3/out/brute/rs1423.png
+
+Process finished with exit code 0

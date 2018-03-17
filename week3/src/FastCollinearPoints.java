@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
-import java.util.function.Consumer;
 
 /**
  *  Princeton/Coursera Algorithms Part 1
@@ -65,6 +64,15 @@ public class FastCollinearPoints {
 
     /* line segment instances being managed */
     private final LineSegment[] segments;
+
+    /**
+     *  Functional interface to enable processing via lambda expression
+     *  @param <T> type of argument consumed
+     */
+    @FunctionalInterface
+    private interface Consumer<T> {
+        void accept(T t);
+    }
 
     /**
      *  Finds all maximal sets of n > 4 collinear points

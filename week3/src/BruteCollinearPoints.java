@@ -2,9 +2,8 @@ import edu.princeton.cs.algs4.StdOut;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 
 /**
  *  Princeton/Coursera Algorithms Part 1
@@ -54,32 +53,12 @@ public class BruteCollinearPoints {
     private final LineSegment[] segments;
 
     /**
-     *  Composite key used to find longest segments including a point
+     *  Functional interface to enable processing via lambda expression
+     *  @param <T> type of argument consumed
      */
-    private class PointSlope {
-
-        /** point */
-        final Point p;
-
-        /** slope of a segment passing through the point */
-        final double s;
-
-        PointSlope(final Point p, final double s) {
-            this.p = p;
-            this.s = s;
-        }
-
-        public int hashCode() {
-            return p.hashCode() + Double.hashCode(s);
-        }
-
-        public boolean equals(final Object o) {
-            if (!(o instanceof PointSlope)) {
-                return false;
-            }
-            final PointSlope otherPs = (PointSlope) o;
-            return p.equals(otherPs.p) && s == otherPs.s;
-        }
+    @FunctionalInterface
+    private interface Consumer<T> {
+        void accept(T t);
     }
 
     /**
@@ -104,62 +83,83 @@ public class BruteCollinearPoints {
         Arrays.sort(points);    // sort the points in ascending order
 
         // check for repeated points
-        for (int p = 0; p < points.length - 1; p++) {
-            if (points[p].compareTo(points[p + 1]) == 0) {
+        identifyRuns(
+            points,
+            Point::compareTo,
+            2,
+            r -> {
                 throw new IllegalArgumentException("repeated point");
             }
-        }
+        );
 
         // find all sets of 4 collinear points via brute force permutation
 
-        final Map<PointSlope, Point> maxPtSlopeSegs = new HashMap<>();
+        final List<Point[]> colPointsList = new ArrayList<>();
         for (int p = 0; p < points.length - 3; p++) {
+
             final Point pointP = points[p];
 
             for (int q = p + 1; q < points.length - 2; q++) {
+
                 final Point pointQ = points[q];
+                final double p2qSlope = pointP.slopeTo(pointQ);
 
                 for (int r = q + 1; r < points.length - 1; r++) {
-                    final Point pointR = points[r];
 
-                    final double p2qSlope = pointP.slopeTo(pointQ);
+                    final Point pointR = points[r];
                     if (p2qSlope != pointP.slopeTo(pointR)) {
                         continue;
                     }
 
                     for (int s = r + 1; s < points.length; s++) {
-                        final Point pointS = points[s];
 
+                        final Point pointS = points[s];
                         if (p2qSlope != pointP.slopeTo(pointS)) {
                             continue;
                         }
 
-                        final PointSlope ps = new PointSlope(pointP, p2qSlope);
-                        final Point psMaxPt = maxPtSlopeSegs.get(ps);
-                        if (psMaxPt == null || psMaxPt.compareTo(pointS) < 0) {
-                            maxPtSlopeSegs.put(ps, pointS);
-                        }
+                        final Point[] colPoints = { pointP, pointS };
+                        Arrays.sort(colPoints);
+                        colPointsList.add(colPoints);
+
                     }
                 }
             }
         }
 
-        // construct the longest line segment(s) using the minimum points
-        final Map<PointSlope, Point> minPtSlopeSegs = new HashMap<>();
-        for (final Map.Entry<PointSlope, Point> e : maxPtSlopeSegs.entrySet()) {
-            final PointSlope ps = new PointSlope(e.getValue(), e.getKey().s);
-            final Point psMinPt = minPtSlopeSegs.get(ps);
-            if (psMinPt == null || psMinPt.compareTo(e.getKey().p) > 0) {
-                minPtSlopeSegs.put(ps, e.getKey().p);
-            }
+        // make an array out of "colPointsList"
+        final Point[][] colPointsArray = new Point[colPointsList.size()][];
+        for (int i = 0; i < colPointsArray.length; i++) {
+            colPointsArray[i] = colPointsList.get(i);
         }
 
-        // construct the longest line segment(s) using the maximum points
+        // add a line segment for each unique set of points in "colPointsArray"
         final List<LineSegment> foundSegments = new ArrayList<>();
-        for (final Map.Entry<PointSlope, Point> e : minPtSlopeSegs.entrySet()) {
-//            StdOut.printf("\n%s-%s", e.getKey().p, e.getValue());
-            foundSegments.add(new LineSegment(e.getKey().p, e.getValue()));
-        }
+        identifyRuns(
+            colPointsArray,
+            (l0, l1) -> {
+                final int l0Size = l0.length;
+                final int l1Size = l1.length;
+                for (int i = 0; i < Math.min(l0Size, l1Size); i++) {
+                    final int pc = l0[i].compareTo(l1[i]);
+                    if (pc != 0) {
+                        return pc;
+                    }
+                }
+                return Integer.compare(l0Size, l1Size);
+            },
+            1,
+            r -> {
+                final Point[] colPoints = r[0];
+//                StdOut.printf("\ncpl(%s),", Arrays.asList(colPoints));
+                foundSegments.add(
+                    new LineSegment(
+                        colPoints[0],
+                        colPoints[colPoints.length - 1]
+                    )
+                );
+            }
+        );
 
         // return all found segments
         segments = foundSegments.toArray(new LineSegment[0]);
@@ -179,6 +179,60 @@ public class BruteCollinearPoints {
     public LineSegment[] segments() {
         return segments.clone();
     }
+
+
+    //
+    //  Private class methods
+    //
+
+    /**
+     *  @param inputArray subject array
+     *  @param comparator used to sort a copy of {@code inputArray}
+     *  in order to detect "runs" of "equal" elements
+     *  @param minRunsize minimum size of a "run"
+     *  @param callback callback to receive each detected "run"
+     *  @param <T> type of array
+     */
+    private static <T> void identifyRuns(
+        final T[] inputArray,
+        final Comparator<T> comparator,
+        final int minRunsize,
+        final Consumer<T[]> callback
+    ) {
+
+        if (inputArray == null || inputArray.length == 0) {
+	        return;
+        }
+
+        final T[] sortedArray = inputArray.clone();
+        Arrays.sort(sortedArray, comparator);
+
+		int start = 0;
+	    T cv = sortedArray[0];
+
+		for (int end = 0; end < sortedArray.length; end++) {
+		    if (cv != null && comparator.compare(cv, sortedArray[end]) == 0) {
+		        // running
+		        continue;
+            }
+            if (end - start >= minRunsize) {
+		        callback.accept(Arrays.copyOfRange(sortedArray, start, end));
+            }
+            start = end;
+		    cv = sortedArray[end];
+        }
+
+        if (sortedArray.length - start >= minRunsize) {
+            callback.accept(
+                Arrays.copyOfRange(sortedArray, start, sortedArray.length)
+            );
+        }
+	}
+
+
+    //
+    //  Public class methods
+    //
 
     /**
      *  Performs basic edge-case testing
