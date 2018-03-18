@@ -2,8 +2,13 @@ import edu.princeton.cs.algs4.StdOut;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static java.util.Comparator.naturalOrder;
+import static java.util.function.Function.identity;
+import static java.util.stream.Collectors.toList;
 
 /**
  *  Princeton/Coursera Algorithms Part 1
@@ -27,7 +32,7 @@ import java.util.List;
  *
  *      Applying this method for each of the n points in turn yields an
  *      efficient algorithm to the problem. The algorithm solves the problem
- *      because points that have equal slopes with respect to p are collinear,
+ *      because points that have equal slopes with respect t## o p are collinear,
  *      and sorting brings such points together. The algorithm is fast because
  *      the bottleneck operation is sorting.
  *
@@ -96,79 +101,60 @@ public class FastCollinearPoints {
         Arrays.sort(points);    // sort the points in ascending order
 
         // check for repeated points
-        identifyRuns(
-            points,
-            Point::compareTo,
-            2,
-            r -> {
-                throw new IllegalArgumentException("repeated point");
-            }
-        );
+        if (points.length != Stream.of(points).distinct().count()) {
+            throw new IllegalArgumentException("repeated point(s)");
+        }
 
         // find all sets of >= 4 collinear points by sorting relative slopes
 
-        final List<Point[]> colPointsList = new ArrayList<>();
-        for (final Point refPoint : points) {
-
-            // create copy of points, sorted by slope to "refPoint"
-            final Point[] soPoints = points.clone();
-            Arrays.sort(soPoints, refPoint.slopeOrder());
-
-            // identify "runs" of 3 (or more) points having the same slope
-            identifyRuns(
-                soPoints,
-                refPoint.slopeOrder(),
-                3,
-                r -> {
-                    // for each run identified, created and add a sorted array
-                    // containing all collinear points to "colPointsList"
-                    final Point[] colPoints = new Point[1 + r.length];
-                    colPoints[0] = refPoint;
-                    for (int i = 0; i < r.length; i++) {
-                        colPoints[1 + i] = r[i];
-                    }
-                    Arrays.sort(colPoints);
-                    colPointsList.add(colPoints);
-                }
-            );
-        }
-
-        // make an array out of "colPointsList"
-        final Point[][] colPointsArray = new Point[colPointsList.size()][];
-        for (int i = 0; i < colPointsArray.length; i++) {
-            colPointsArray[i] = colPointsList.get(i);
-        }
-
-        // add a line segment for each unique set of points in "colPointsArray"
-        final List<LineSegment> foundSegments = new ArrayList<>();
-        identifyRuns(
-            colPointsArray,
-            (l0, l1) -> {
-                final int l0Size = l0.length;
-                final int l1Size = l1.length;
-                for (int i = 0; i < Math.min(l0Size, l1Size); i++) {
-                    final int pc = l0[i].compareTo(l1[i]);
-                    if (pc != 0) {
-                        return pc;
-                    }
-                }
-                return Integer.compare(l0Size, l1Size);
-            },
-            1,
-            r -> {
-                final Point[] colPoints = r[0];
-//                StdOut.printf("\ncpl(%s),", Arrays.asList(colPoints));
-                foundSegments.add(
-                    new LineSegment(
-                        colPoints[0],
-                        colPoints[colPoints.length - 1]
+        this.segments = (
+            Stream.of(points)
+            // for each collinear segment
+            .map(
+                // map each "refPoint" to a list of points (as an array)
+                refPoint -> (
+                    // stream a copy of points
+                    Stream.of(points.clone())
+                    // sorted by (segment) slope, relative to "refPoint"
+                    .sorted(refPoint.slopeOrder())
+                    // group points by slope relative to "refPoint"
+                    .collect(
+                        Collectors.groupingBy(
+                            refPoint::slopeTo,
+                            Collectors.mapping(identity(), toList())
+                        )
                     )
-                );
-            }
+                    .entrySet()
+                    // stream each grouped slope/points entry
+                    .stream()
+                    // filter out groups smaller than size 3
+                    .filter(e -> e.getValue().size() >= 3)
+                    // construct sorted point list for each group
+                    .map(
+                        e -> {
+                            final List<Point> v = e.getValue();
+                            final List<Point> l = new ArrayList<>(v.size() + 1);
+                            l.add(refPoint);
+                            l.addAll(v);
+                            l.sort(naturalOrder());
+                            return l;
+                        }
+                    )
+                )
+            )
+            // concatenate all streams of grouped slope/points entries
+            .flatMap(s -> s)
+            // collect into a "super-list" of grouped slope/points entries
+            .collect(Collectors.toList())
+            // convert to a stream of grouped slope/points entries
+            .stream()
+            // remove duplicates
+            .distinct()
+            // map each into an instance of the target "LineSegment" type
+            .map(lp -> new LineSegment(lp.get(0), lp.get(lp.size() - 1)))
+            // return an array containing all streamed entries
+            .toArray(LineSegment[]::new)
         );
-
-        // return all found segments
-        segments = foundSegments.toArray(new LineSegment[0]);
 
     }
 
@@ -188,55 +174,6 @@ public class FastCollinearPoints {
 
 
     //
-    //  Private class methods
-    //
-
-    /**
-     *  @param inputArray subject array
-     *  @param comparator used to sort a copy of {@code inputArray}
-     *  in order to detect "runs" of "equal" elements
-     *  @param minRunsize minimum size of a "run"
-     *  @param callback callback to receive each detected "run"
-     *  @param <T> type of array
-     */
-    private static <T> void identifyRuns(
-        final T[] inputArray,
-        final Comparator<T> comparator,
-        final int minRunsize,
-        final Consumer<T[]> callback
-    ) {
-
-        if (inputArray == null || inputArray.length == 0) {
-	        return;
-        }
-
-        final T[] sortedArray = inputArray.clone();
-        Arrays.sort(sortedArray, comparator);
-
-		int start = 0;
-	    T cv = sortedArray[0];
-
-		for (int end = 0; end < sortedArray.length; end++) {
-		    if (cv != null && comparator.compare(cv, sortedArray[end]) == 0) {
-		        // running
-		        continue;
-            }
-            if (end - start >= minRunsize) {
-		        callback.accept(Arrays.copyOfRange(sortedArray, start, end));
-            }
-            start = end;
-		    cv = sortedArray[end];
-        }
-
-        if (sortedArray.length - start >= minRunsize) {
-            callback.accept(
-                Arrays.copyOfRange(sortedArray, start, sortedArray.length)
-            );
-        }
-	}
-
-
-    //
     //  Public class methods
     //
 
@@ -251,20 +188,20 @@ public class FastCollinearPoints {
 	        new FastCollinearPoints(null);
 	        throw new RuntimeException("didn't throw for null point");
         } catch(final IllegalArgumentException ie) {
-	        StdOut.println("OK: null constructor arg");
+	        StdOut.printf("OK: null constructor arg (%s)\n", ie);
         }
 	    try {
 	        new FastCollinearPoints(new Point[] { null });
 	        throw new RuntimeException("didn't throw for null point");
         } catch(final IllegalArgumentException ie) {
-	        StdOut.println("OK: null point");
+	        StdOut.printf("OK: null point (%s)\n", ie);
         }
 	    try {
             final Point point = new Point(1, 2);
             new FastCollinearPoints(new Point[] {point, point});
 	        throw new RuntimeException("didn't throw for duplicate point");
         } catch(final IllegalArgumentException ie) {
-	        StdOut.println("OK: duplicate point");
+	        StdOut.printf("OK: duplicate point (%s)\n", ie);
         }
     }
 
