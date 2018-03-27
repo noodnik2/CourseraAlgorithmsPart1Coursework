@@ -1,0 +1,109 @@
+8 Puzzle
+10/100
+Hide grader output
+See the Assessment Guide for information on how to interpret this report.
+
+ASSESSMENT SUMMARY
+
+Compilation:  PASSED
+API:          PASSED
+
+Findbugs:     FAILED (2 warnings)
+PMD:          PASSED
+Checkstyle:   FAILED (1 error, 12 warnings)
+
+Correctness:  No tests available for autograding.
+Memory:       No tests available for autograding.
+Timing:       No tests available for autograding.
+
+Aggregate score: 10.00%
+[Compilation: 5%, API: 5%, Findbugs: 0%, PMD: 0%, Checkstyle: 0%, Correctness: 60%, Memory: 10%, Timing: 20%]
+
+ASSESSMENT DETAILS
+
+The following files were submitted:
+----------------------------------
+7.5K Mar 26 21:24 Board.java
+4.2K Mar 26 21:24 Solver.java
+
+
+********************************************************************************
+*  COMPILING
+********************************************************************************
+
+
+% javac Board.java
+*-----------------------------------------------------------
+
+% javac Solver.java
+*-----------------------------------------------------------
+
+
+================================================================
+
+
+Checking the APIs of your programs.
+*-----------------------------------------------------------
+Board:
+
+Solver:
+
+================================================================
+
+
+********************************************************************************
+*  CHECKING STYLE AND COMMON BUG PATTERNS
+********************************************************************************
+
+
+% findbugs *.class
+*-----------------------------------------------------------
+M P URF_UNREAD_FIELD UrF: The instance (or static) variable 'hammingComparator' is never read. Consider removing it from the class.  At Solver.java:[line 60]
+L P SIC_INNER_SHOULD_BE_STATIC_NEEDS_THIS SIC: Should the inner class 'Board$Coord' be refactored into a static nested class?  At Board.java:[lines 94-109]
+Warnings generated: 2
+
+
+================================================================
+
+
+% pmd .
+*-----------------------------------------------------------
+Board.java:230: The method body is empty. If this is your intent, document it with a comment. [UncommentedEmptyMethodBody]
+Solver.java:60: Avoid unused private instance (or static) variables, such as 'hammingComparator'. [UnusedPrivateField]
+Solver.java:60: Instance (and static) variables should be declared at the top of the class, before any method declarations, constructors, or nested classes. [FieldDeclarationsShouldBeAtStartOfClass]
+Solver.java:60: The private instance (or static) variable 'hammingComparator' can be made 'final'; it is initialized only in the declaration or constructor. [ImmutableField]
+Solver.java:63: Instance (and static) variables should be declared at the top of the class, before any method declarations, constructors, or nested classes. [FieldDeclarationsShouldBeAtStartOfClass]
+Solver.java:63: The private instance (or static) variable 'manhattanComparator' can be made 'final'; it is initialized only in the declaration or constructor. [ImmutableField]
+PMD ends with 6 warnings.
+
+
+================================================================
+
+
+% checkstyle *.java
+*-----------------------------------------------------------
+[ERROR] Board.java:3:1: Do not import 'java.util.stream.IntStream' in this course. [IllegalImport]
+[WARN] Board.java:84:1: File contains tab characters (this is the first occurrence). Configure your editor to replace tabs with spaces. [FileTabCharacter]
+[WARN] Board.java:84:27: The instance variable '_values' must start with a lowercase letter and use camelCase. [MemberName]
+[WARN] Board.java:89:23: The instance variable '_size' must start with a lowercase letter and use camelCase. [MemberName]
+[WARN] Board.java:96:27: The instance variable '_row' must start with a lowercase letter and use camelCase. [MemberName]
+[WARN] Board.java:96:33: The instance variable '_col' must start with a lowercase letter and use camelCase. [MemberName]
+[WARN] Board.java:174:27: Do not use the 'instanceof' operator in this course. Use 'getClass()' to compare classes. [IllegalToken]
+[WARN] Board.java:235:7: The comment is empty. [EmptyComment]
+[WARN] Board.java:237:7: The comment is empty. [EmptyComment]
+[WARN] Solver.java:48:1: File contains tab characters (this is the first occurrence). Configure your editor to replace tabs with spaces. [FileTabCharacter]
+Checkstyle ends with 1 error and 9 warnings.
+
+% custom checkstyle checks for Board.java
+*-----------------------------------------------------------
+[WARN] Board.java:79:1: Defining a nested class in this program suggests poor design. [DescendantToken]
+Checkstyle ends with 0 errors and 1 warning.
+
+% custom checkstyle checks for Solver.java
+*-----------------------------------------------------------
+[WARN] Solver.java:60:17: Can you make the variable of type 'Comparator' a local variable instead of an instance (or static) variable? [Design]
+[WARN] Solver.java:63:17: Can you make the variable of type 'Comparator' a local variable instead of an instance (or static) variable? [Design]
+Checkstyle ends with 0 errors and 2 warnings.
+
+
+================================================================
