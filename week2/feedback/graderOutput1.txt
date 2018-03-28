@@ -1,0 +1,329 @@
+See the Assessment Guide for information on how to interpret this report.
+
+ASSESSMENT SUMMARY
+
+Compilation:  PASSED (0 errors, 3 warnings)
+API:          PASSED
+
+Findbugs:     FAILED (5 warnings)
+PMD:          PASSED
+Checkstyle:   FAILED (3 errors, 34 warnings)
+
+Correctness:  No tests available for autograding.
+Memory:       No tests available for autograding.
+Timing:       No tests available for autograding.
+
+Aggregate score: 10.00%
+[Compilation: 5%, API: 5%, Findbugs: 0%, PMD: 0%, Checkstyle: 0%, Correctness: 60%, Memory: 10%, Timing: 20%]
+
+ASSESSMENT DETAILS
+
+The following files were submitted:
+----------------------------------
+7.0K Mar  4 05:05 Deque.java
+1.3K Mar  4 05:05 Permutation.java
+9.4K Mar  4 05:05 RandomizedQueue.java
+
+
+********************************************************************************
+*  COMPILING
+********************************************************************************
+
+
+% javac Deque.java
+*-----------------------------------------------------------
+
+% javac RandomizedQueue.java
+*-----------------------------------------------------------
+RandomizedQueue.java:49: warning: [unchecked] unchecked cast
+            mItemArray = (Item[]) new Object[inInitialCapacity];
+                                  ^
+  required: Item[]
+  found:    Object[]
+  where Item is a type-variable:
+    Item extends Object declared in class ResizingArray
+RandomizedQueue.java:112: warning: [unchecked] unchecked cast
+            final Item[] itemArrayCopy = (Item[]) new Object[mItemCount];
+                                                  ^
+  required: Item[]
+  found:    Object[]
+  where Item is a type-variable:
+    Item extends Object declared in class ResizingArray
+RandomizedQueue.java:126: warning: [unchecked] unchecked cast
+            final Item[] newItemArray = (Item[]) new Object[inCapacity];
+                     See the Assessment Guide for information on how to interpret this report.
+
+ASSESSMENT SUMMARY
+
+Compilation:  PASSED (0 errors, 3 warnings)
+API:          PASSED
+
+Findbugs:     FAILED (5 warnings)
+PMD:          PASSED
+Checkstyle:   FAILED (3 errors, 34 warnings)
+
+Correctness:  No tests available for autograding.
+Memory:       No tests available for autograding.
+Timing:       No tests available for autograding.
+
+Aggregate score: 10.00%
+[Compilation: 5%, API: 5%, Findbugs: 0%, PMD: 0%, Checkstyle: 0%, Correctness: 60%, Memory: 10%, Timing: 20%]
+
+ASSESSMENT DETAILS
+
+The following files were submitted:
+----------------------------------
+7.0K Mar  4 05:05 Deque.java
+1.3K Mar  4 05:05 Permutation.java
+9.4K Mar  4 05:05 RandomizedQueue.java
+
+
+********************************************************************************
+*  COMPILING
+********************************************************************************
+
+
+% javac Deque.java
+*-----------------------------------------------------------
+
+% javac RandomizedQueue.java
+*-----------------------------------------------------------
+RandomizedQueue.java:49: warning: [unchecked] unchecked cast
+            mItemArray = (Item[]) new Object[inInitialCapacity];
+                                  ^
+  required: Item[]
+  found:    Object[]
+  where Item is a type-variable:
+    Item extends Object declared in class ResizingArray
+RandomizedQueue.java:112: warning: [unchecked] unchecked cast
+            final Item[] itemArrayCopy = (Item[]) new Object[mItemCount];
+                                                  ^
+  required: Item[]
+  found:    Object[]
+  where Item is a type-variable:
+    Item extends Object declared in class ResizingArray
+RandomizedQueue.java:126: warning: [unchecked] unchecked cast
+            final Item[] newItemArray = (Item[]) new Object[inCapacity];
+                                                 ^
+  required: Item[]
+  found:    Object[]
+  where Item is a type-variable:
+    Item extends Object declared in class ResizingArray
+3 warnings
+
+% javac Permutation.java
+*-----------------------------------------------------------
+
+
+================================================================
+
+
+Checking the APIs of your programs.
+*-----------------------------------------------------------
+Deque:
+
+RandomizedQueue:
+
+Permutation:
+
+================================================================
+
+
+********************************************************************************
+*  CHECKING STYLE AND COMMON BUG PATTERNS
+********************************************************************************
+
+
+% findbugs *.class
+*-----------------------------------------------------------
+L B ES_COMPARING_STRINGS_WITH_EQ ES: Compares two strings for reference equality using '==' or '!='. Use the 'equals()' method for object equality (to check whether two strings correspond to the same sequence of characters).  At Deque.java:[line 199]
+L B ES_COMPARING_STRINGS_WITH_EQ ES: Compares two strings for reference equality using '==' or '!='. Use the 'equals()' method for object equality (to check whether two strings correspond to the same sequence of characters).  At Deque.java:[line 201]
+L B ES_COMPARING_STRINGS_WITH_EQ ES: Compares two strings for reference equality using '==' or '!='. Use the 'equals()' method for object equality (to check whether two strings correspond to the same sequence of characters).  At Deque.java:[line 175]
+L B ES_COMPARING_STRINGS_WITH_EQ ES: Compares two strings for reference equality using '==' or '!='. Use the 'equals()' method for object equality (to check whether two strings correspond to the same sequence of characters).  At Deque.java:[line 205]
+L B ES_COMPARING_STRINGS_WITH_EQ ES: Compares two strings for reference equality using '==' or '!='. Use the 'equals()' method for object equality (to check whether two strings correspond to the same sequence of characters).  At Deque.java:[line 197]
+Warnings generated: 5
+
+
+================================================================
+
+
+% pmd .
+*-----------------------------------------------------------
+Deque.java:34: Instance (and static) variables should be declared at the top of the class, before any method declarations, constructors, or nested classes. [FieldDeclarationsShouldBeAtStartOfClass]
+Deque.java:37: Instance (and static) variables should be declared at the top of the class, before any method declarations, constructors, or nested classes. [FieldDeclarationsShouldBeAtStartOfClass]
+Deque.java:40: Instance (and static) variables should be declared at the top of the class, before any method declarations, constructors, or nested classes. [FieldDeclarationsShouldBeAtStartOfClass]
+Deque.java:167: A method/constructor shouldnt explicitly throw java.lang.Exception [SignatureDeclareThrowsException]
+RandomizedQueue.java:139: Instance (and static) variables should be declared at the top of the class, before any method declarations, constructors, or nested classes. [FieldDeclarationsShouldBeAtStartOfClass]
+RandomizedQueue.java:225: A method/constructor shouldnt explicitly throw java.lang.Exception [SignatureDeclareThrowsException]
+PMD ends with 6 warnings.
+
+
+================================================================
+
+
+% checkstyle *.java
+*-----------------------------------------------------------
+[ERROR] Deque.java:167:52: Do not use the keyword 'throws' in this course. [IllegalToken]
+[ERROR] RandomizedQueue.java:7:1: Do not import 'java.lang.System.arraycopy' in this course. [IllegalImport]
+[ERROR] RandomizedQueue.java:225:52: Do not use the keyword 'throws' in this course. [IllegalToken]
+[WARN] Deque.java:15:7: The comment is empty. [EmptyComment]
+[WARN] Deque.java:17:7: The comment is empty. [EmptyComment]
+[WARN] Deque.java:29:7: The comment is empty. [EmptyComment]
+[WARN] Deque.java:31:7: The comment is empty. [EmptyComment]
+[WARN] Deque.java:43:7: The comment is empty. [EmptyComment]
+[WARN] Deque.java:45:7: The comment is empty. [EmptyComment]
+[WARN] Deque.java:167:59: Do not throw 'Exception' in this course. [IllegalThrows]
+[WARN] Deque.java:180:16: 'catch' is not followed by whitespace. [WhitespaceAround]
+[WARN] Deque.java:186:16: 'catch' is not followed by whitespace. [WhitespaceAround]
+[WARN] Deque.java:227:16: 'catch' is not followed by whitespace. [WhitespaceAround]
+[WARN] Deque.java:233:16: 'catch' is not followed by whitespace. [WhitespaceAround]
+[WARN] Permutation.java:14:7: The comment is empty. [EmptyComment]
+[WARN] Permutation.java:16:7: The comment is empty. [EmptyComment]
+[WARN] Permutation.java:34:14: 'while' is not followed by whitespace. [WhitespaceAfter]
+[WARN] RandomizedQueue.java:7: Do not use static imports. [AvoidStaticImport]
+[WARN] RandomizedQueue.java:19:7: The comment is empty. [EmptyComment]
+[WARN] RandomizedQueue.java:21:7: The comment is empty. [EmptyComment]
+[WARN] RandomizedQueue.java:29:11: The comment is empty. [EmptyComment]
+[WARN] RandomizedQueue.java:31:11: The comment is empty. [EmptyComment]
+[WARN] RandomizedQueue.java:40:11: The comment is empty. [EmptyComment]
+[WARN] RandomizedQueue.java:42:11: The comment is empty. [EmptyComment]
+[WARN] RandomizedQueue.java:48:15: '//' or '/*' is not followed by whitespace. [WhitespaceAfter]
+[WARN] RandomizedQueue.java:54:11: The comment is empty. [EmptyComment]
+[WARN] RandomizedQueue.java:56:11: The comment is empty. [EmptyComment]
+[WARN] RandomizedQueue.java:111:15: '//' or '/*' is not followed by whitespace. [WhitespaceAfter]
+[WARN] RandomizedQueue.java:125:15: '//' or '/*' is not followed by whitespace. [WhitespaceAfter]
+[WARN] RandomizedQueue.java:134:7: The comment is empty. [EmptyComment]
+[WARN] RandomizedQueue.java:136:7: The comment is empty. [EmptyComment]
+[WARN] RandomizedQueue.java:142:7: The comment is empty. [EmptyComment]
+[WARN] RandomizedQueue.java:144:7: The comment is empty. [EmptyComment]
+[WARN] RandomizedQueue.java:225:59: Do not throw 'Exception' in this course. [IllegalThrows]
+[WARN] RandomizedQueue.java:309:16: 'catch' is not followed by whitespace. [WhitespaceAround]
+[WARN] RandomizedQueue.java:316:16: 'catch' is not followed by whitespace. [WhitespaceAround]
+[WARN] RandomizedQueue.java:323:16: 'catch' is not followed by whitespace. [WhitespaceAround]
+Checkstyle ends with 3 errors and 34 warnings.
+
+% custom checkstyle checks for Deque.java
+*-----------------------------------------------------------
+
+% custom checkstyle checks for RandomizedQueue.java
+*-----------------------------------------------------------
+
+% custom checkstyle checks for Permutation.java
+*-----------------------------------------------------------
+
+
+================================================================
+
+
+ABORTING: you must fix any Checkstyle errors (not warnings).                            ^
+  required: Item[]
+  found:    Object[]
+  where Item is a type-variable:
+    Item extends Object declared in class ResizingArray
+3 warnings
+
+% javac Permutation.java
+*-----------------------------------------------------------
+
+
+================================================================
+
+
+Checking the APIs of your programs.
+*-----------------------------------------------------------
+Deque:
+
+RandomizedQueue:
+
+Permutation:
+
+================================================================
+
+
+********************************************************************************
+*  CHECKING STYLE AND COMMON BUG PATTERNS
+********************************************************************************
+
+
+% findbugs *.class
+*-----------------------------------------------------------
+L B ES_COMPARING_STRINGS_WITH_EQ ES: Compares two strings for reference equality using '==' or '!='. Use the 'equals()' method for object equality (to check whether two strings correspond to the same sequence of characters).  At Deque.java:[line 199]
+L B ES_COMPARING_STRINGS_WITH_EQ ES: Compares two strings for reference equality using '==' or '!='. Use the 'equals()' method for object equality (to check whether two strings correspond to the same sequence of characters).  At Deque.java:[line 201]
+L B ES_COMPARING_STRINGS_WITH_EQ ES: Compares two strings for reference equality using '==' or '!='. Use the 'equals()' method for object equality (to check whether two strings correspond to the same sequence of characters).  At Deque.java:[line 175]
+L B ES_COMPARING_STRINGS_WITH_EQ ES: Compares two strings for reference equality using '==' or '!='. Use the 'equals()' method for object equality (to check whether two strings correspond to the same sequence of characters).  At Deque.java:[line 205]
+L B ES_COMPARING_STRINGS_WITH_EQ ES: Compares two strings for reference equality using '==' or '!='. Use the 'equals()' method for object equality (to check whether two strings correspond to the same sequence of characters).  At Deque.java:[line 197]
+Warnings generated: 5
+
+
+================================================================
+
+
+% pmd .
+*-----------------------------------------------------------
+Deque.java:34: Instance (and static) variables should be declared at the top of the class, before any method declarations, constructors, or nested classes. [FieldDeclarationsShouldBeAtStartOfClass]
+Deque.java:37: Instance (and static) variables should be declared at the top of the class, before any method declarations, constructors, or nested classes. [FieldDeclarationsShouldBeAtStartOfClass]
+Deque.java:40: Instance (and static) variables should be declared at the top of the class, before any method declarations, constructors, or nested classes. [FieldDeclarationsShouldBeAtStartOfClass]
+Deque.java:167: A method/constructor shouldnt explicitly throw java.lang.Exception [SignatureDeclareThrowsException]
+RandomizedQueue.java:139: Instance (and static) variables should be declared at the top of the class, before any method declarations, constructors, or nested classes. [FieldDeclarationsShouldBeAtStartOfClass]
+RandomizedQueue.java:225: A method/constructor shouldnt explicitly throw java.lang.Exception [SignatureDeclareThrowsException]
+PMD ends with 6 warnings.
+
+
+================================================================
+
+
+% checkstyle *.java
+*-----------------------------------------------------------
+[ERROR] Deque.java:167:52: Do not use the keyword 'throws' in this course. [IllegalToken]
+[ERROR] RandomizedQueue.java:7:1: Do not import 'java.lang.System.arraycopy' in this course. [IllegalImport]
+[ERROR] RandomizedQueue.java:225:52: Do not use the keyword 'throws' in this course. [IllegalToken]
+[WARN] Deque.java:15:7: The comment is empty. [EmptyComment]
+[WARN] Deque.java:17:7: The comment is empty. [EmptyComment]
+[WARN] Deque.java:29:7: The comment is empty. [EmptyComment]
+[WARN] Deque.java:31:7: The comment is empty. [EmptyComment]
+[WARN] Deque.java:43:7: The comment is empty. [EmptyComment]
+[WARN] Deque.java:45:7: The comment is empty. [EmptyComment]
+[WARN] Deque.java:167:59: Do not throw 'Exception' in this course. [IllegalThrows]
+[WARN] Deque.java:180:16: 'catch' is not followed by whitespace. [WhitespaceAround]
+[WARN] Deque.java:186:16: 'catch' is not followed by whitespace. [WhitespaceAround]
+[WARN] Deque.java:227:16: 'catch' is not followed by whitespace. [WhitespaceAround]
+[WARN] Deque.java:233:16: 'catch' is not followed by whitespace. [WhitespaceAround]
+[WARN] Permutation.java:14:7: The comment is empty. [EmptyComment]
+[WARN] Permutation.java:16:7: The comment is empty. [EmptyComment]
+[WARN] Permutation.java:34:14: 'while' is not followed by whitespace. [WhitespaceAfter]
+[WARN] RandomizedQueue.java:7: Do not use static imports. [AvoidStaticImport]
+[WARN] RandomizedQueue.java:19:7: The comment is empty. [EmptyComment]
+[WARN] RandomizedQueue.java:21:7: The comment is empty. [EmptyComment]
+[WARN] RandomizedQueue.java:29:11: The comment is empty. [EmptyComment]
+[WARN] RandomizedQueue.java:31:11: The comment is empty. [EmptyComment]
+[WARN] RandomizedQueue.java:40:11: The comment is empty. [EmptyComment]
+[WARN] RandomizedQueue.java:42:11: The comment is empty. [EmptyComment]
+[WARN] RandomizedQueue.java:48:15: '//' or '/*' is not followed by whitespace. [WhitespaceAfter]
+[WARN] RandomizedQueue.java:54:11: The comment is empty. [EmptyComment]
+[WARN] RandomizedQueue.java:56:11: The comment is empty. [EmptyComment]
+[WARN] RandomizedQueue.java:111:15: '//' or '/*' is not followed by whitespace. [WhitespaceAfter]
+[WARN] RandomizedQueue.java:125:15: '//' or '/*' is not followed by whitespace. [WhitespaceAfter]
+[WARN] RandomizedQueue.java:134:7: The comment is empty. [EmptyComment]
+[WARN] RandomizedQueue.java:136:7: The comment is empty. [EmptyComment]
+[WARN] RandomizedQueue.java:142:7: The comment is empty. [EmptyComment]
+[WARN] RandomizedQueue.java:144:7: The comment is empty. [EmptyComment]
+[WARN] RandomizedQueue.java:225:59: Do not throw 'Exception' in this course. [IllegalThrows]
+[WARN] RandomizedQueue.java:309:16: 'catch' is not followed by whitespace. [WhitespaceAround]
+[WARN] RandomizedQueue.java:316:16: 'catch' is not followed by whitespace. [WhitespaceAround]
+[WARN] RandomizedQueue.java:323:16: 'catch' is not followed by whitespace. [WhitespaceAround]
+Checkstyle ends with 3 errors and 34 warnings.
+
+% custom checkstyle checks for Deque.java
+*-----------------------------------------------------------
+
+% custom checkstyle checks for RandomizedQueue.java
+*-----------------------------------------------------------
+
+% custom checkstyle checks for Permutation.java
+*-----------------------------------------------------------
+
+
+================================================================
+
+
+ABORTING: you must fix any Checkstyle errors (not warnings).
