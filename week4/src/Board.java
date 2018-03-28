@@ -1,11 +1,8 @@
-import edu.princeton.cs.algs4.StdOut;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  *  Princeton/Coursera Algorithms Part 1
@@ -83,53 +80,84 @@ import java.util.Set;
  */
 public class Board {
 
-    /**
-     *  Immutable array to hold the board's values
-     */
+	private final int _hashCode;
 	private final byte[] _values;
-	private final byte[] _valueMap;
 
-    /**
-     *  Size of an edge of the board
-     */
-	private final int _size;
 	private final int _hammingDistance;
 	private final int _manhattanDistance;
 
-	private static final Map<Board, Collection<Board>> NEIGHBORS = new HashMap<>();
+    private static class BoardSizeInfo {
 
+        final byte[] _manhattanDistances;
+        final byte[] _posToRow;
+        final byte[] _posToCol;
+        final int _dim;
 
-    /**
-     *  Coord of a position within the board
-     */
-	private class Coord {
+        private static final int[] BOARD_SIZES = { 1, 4, 9, 16, 25, 36, 49 };
 
-	    private final int _row, _col;
-
-	    Coord(final int pos) {
-			_row = pos / _size;
-			_col = pos % _size;
-		}
-
-		Coord(final int row, final int col) {
-			_row = row;
-			_col = col;
-		}
-
-		int getManhattanDistanceTo(final Coord c) {
-			return Math.abs(_row - c._row) + Math.abs(_col - c._col);
-		}
-
-		int getBoardPos() {
-	        return _row * _size + _col;
+        BoardSizeInfo(final byte[] values) {
+            final int maxPos = values.length;
+            _dim = lookupDim(maxPos);
+            final byte[] manhattanDistances = new byte[maxPos * maxPos];
+            final byte[] posToRow = new byte[maxPos];
+            final byte[] posToCol = new byte[maxPos];
+            int lhsPosBase = 0;
+            for (int lhsPos = 0; lhsPos < maxPos; lhsPos++) {
+                final int lhsRow = lhsPos / _dim;
+                final int lhsCol = lhsPos % _dim;
+                posToRow[lhsPos] = (byte) lhsRow;
+                posToCol[lhsPos] = (byte) lhsCol;
+                for (int rhsPos = 0; rhsPos < maxPos; rhsPos++) {
+                    manhattanDistances[lhsPosBase + rhsPos] = (byte) (
+                        calculateManhattanDistance(
+                            new int[] { lhsRow, lhsCol },
+                            new int[] { rhsPos / _dim, rhsPos % _dim }
+                        )
+                    );
+                }
+                lhsPosBase += maxPos;
+            }
+            _manhattanDistances = manhattanDistances;
+            _posToRow = posToRow;
+            _posToCol = posToCol;
         }
-	}
+
+        static int lookupDim(final int maxPos) {
+            for (int i = 0; i < BOARD_SIZES.length; i++) {
+                if (BOARD_SIZES[i] == maxPos) {
+                    return i + 1;
+                }
+            }
+            throw new IllegalArgumentException();
+        }
+
+        /**
+         *  @param lhsRowCol first position (row, col)
+         *  @param rhsRowCol second position (row, col)
+         *  @return manhattan distance between the given positions
+         */
+        private static int calculateManhattanDistance(
+            final int[] lhsRowCol,
+            final int[] rhsRowCol
+        ) {
+            int distance = 0;
+            for (int axis = 0; axis < 2; axis++) {
+                distance += Math.abs(lhsRowCol[axis] - rhsRowCol[axis]);
+            }
+            return distance;
+        }
+
+    }
+
+    /** cache of information regarding a given board size */
+    private static final Map<Integer, BoardSizeInfo> BOARDSIZEINFO_CACHE
+        = new HashMap<>();
 
     /**
      *  @param valueMatrix matrix of board values
      */
     public Board(final int[][] valueMatrix) {
-        this(linearizeMatrixIntoArray(valueMatrix));
+        this(linearizeMatrix(valueMatrix));
     }
 
     /**
@@ -138,28 +166,22 @@ public class Board {
     private Board(final byte[] values) {
 
         _values = values;
-        _size = (int) Math.sqrt(_values.length);
+        _hashCode = Arrays.hashCode(_values);
 
-        _valueMap = new byte[_size * _size];    // reverse-lookup map
-        for (int boardPos = 0; boardPos < _size * _size; boardPos++) {
-            _valueMap[_values[boardPos]] = (byte) boardPos;
-        }
+        final BoardSizeInfo bsi = getBoardSizeInfo(_values);
 
         int hammingDistance = 0;
-        for (int pos = 0; pos < _size * _size - 1; pos++) {
-            if (valueAt(pos) != pos + 1) {
-                hammingDistance++;
-            }
-        }
-        _hammingDistance = hammingDistance;
-
         int manhattanDistance = 0;
-        for (int pos = 0; pos < _size * _size - 1; pos++) {
-            if (valueAt(pos) != pos + 1) {
-                manhattanDistance += new Coord(pos)
-                    .getManhattanDistanceTo(findValue(pos + 1));
+        for (int pos = 0; pos < _values.length - 1; pos++) {
+            if (_values[pos] != pos + 1) {
+                hammingDistance++;
+                manhattanDistance += bsi._manhattanDistances[
+                    pos * _values.length + findValuePos(pos + 1)
+                ];
             }
         }
+
+        _hammingDistance = hammingDistance;
         _manhattanDistance = manhattanDistance;
 
     }
@@ -168,7 +190,7 @@ public class Board {
      *  @return size of an edge of the matrix
      */
     public int dimension() {
-        return _size;
+        return BoardSizeInfo.lookupDim(_values.length);
     }
 
     /**
@@ -198,8 +220,10 @@ public class Board {
      *  @return a copy of this board having a pair of blocks exchanged
      */
     public Board twin() {
-		final int row = findValue(0)._row == 0 ? 1 : 0;
-		return swap(new Coord(row, 0), new Coord(row, 1));
+        final int zeroPos = findValuePos(0);
+        final BoardSizeInfo bsi = getBoardSizeInfo(_values);
+        final int swapRowPos = bsi._posToRow[zeroPos] == 0 ? bsi._dim : 0;
+        return createSwappedBoard(swapRowPos, 1);
     }
 
     /**
@@ -209,44 +233,42 @@ public class Board {
         if (!(boardObject instanceof Board)) {
 			return false;
 		}
-		final Board board = (Board) boardObject;
-		if (_size != board._size) {
-			return false;
-		}
-		for (int boardPos = 0; boardPos < _size * _size; boardPos++) {
-		    if (_values[boardPos] != board._values[boardPos]) {
-		        return false;
-            }
-        }
-		return true;
+		return Arrays.equals(_values, ((Board) boardObject)._values);
+    }
+
+    public int hashCode() {
+        return _hashCode;
     }
 
     /**
-     *  @return iterator to possible child boards
+     *  @return possible child boards as an {@link Iterable}
      */
     public Iterable<Board> neighbors() {
-        final Iterable<Board> cachedNeighbors = NEIGHBORS.get(this);
-        if (cachedNeighbors != null) {
-            return cachedNeighbors;
-        }
 
         final List<Board> calculatedNeighbors = new ArrayList<>(4);
-        final Coord p = findValue(0);
-        if (p._row > 0) {
-            calculatedNeighbors.add(swap(p, new Coord(p._row - 1, p._col)));
+
+        final int zeroPos = findValuePos(0);
+        final BoardSizeInfo bsi = getBoardSizeInfo(_values);
+        final int row = bsi._posToRow[zeroPos];
+        final int col = bsi._posToCol[zeroPos];
+
+        if (row > 0) {
+            // swap with neighbor above
+            calculatedNeighbors.add(createSwappedBoard(zeroPos, -bsi._dim));
         }
-        if (p._row < _size - 1) {
-            calculatedNeighbors.add(swap(p, new Coord(p._row + 1, p._col)));
+        if (row < bsi._dim - 1) {
+            // swap with neighbor below
+            calculatedNeighbors.add(createSwappedBoard(zeroPos, bsi._dim));
         }
-        if (p._col > 0) {
-            calculatedNeighbors.add(swap(p, new Coord(p._row, p._col - 1)));
+        if (col > 0) {
+            // swap with neighbor on the left
+            calculatedNeighbors.add(createSwappedBoard(zeroPos, -1));
         }
-        if (p._col < _size - 1) {
-            calculatedNeighbors.add(swap(p, new Coord(p._row, p._col + 1)));
+        if (col < bsi._dim - 1) {
+            // swap with neighbor on the right
+            calculatedNeighbors.add(createSwappedBoard(zeroPos, 1));
         }
 
-        NEIGHBORS.put(this, calculatedNeighbors);
-        StdOut.printf("cacheSize(%s)\n", NEIGHBORS.size());
         return calculatedNeighbors;
     }
 
@@ -255,10 +277,11 @@ public class Board {
      *  (in the output format specified in this class' Javadoc)
      */
     public String toString() {
-        final StringBuilder s = new StringBuilder(_size + "\n");
-        for (int row = 0; row < _size; row++) {
-            for (int col = 0; col < _size; col++) {
-                s.append(String.format("%2d ", _values[row * _size + col]));
+        final int dim = dimension();
+        final StringBuilder s = new StringBuilder(dim + "\n");
+        for (int row = 0; row < dim; row++) {
+            for (int col = 0; col < dim; col++) {
+                s.append(String.format("%2d ", _values[row * dim + col]));
             }
             s.append("\n");
         }
@@ -267,46 +290,27 @@ public class Board {
 
 
     //
-    //  Private instance methods
+    //  Private class methods
     //
 
     /**
-     *  @param value value being sought
-     *  @return coordinate where the value was found within the current board
+     *  @return information about the current board based upon its size
      */
-    private Coord findValue(final int value) {
-        return new Coord(_valueMap[value]);
-	}
+    private static BoardSizeInfo getBoardSizeInfo(final byte[] values) {
 
-    /**
-     *  @param boardPos position on the board
-     *  @return value at the specified position
-     */
-	private byte valueAt(final int boardPos) {
-		return _values[boardPos];
-	}
+        final int dim = BoardSizeInfo.lookupDim(values.length);
 
-    /**
-     *  @param c coordinate on the board
-     *  @return value at the specified coordinate
-     */
-	private byte valueAt(final Coord c) {
-		return valueAt(c.getBoardPos());
-	}
+        final BoardSizeInfo bsi = BOARDSIZEINFO_CACHE.get(dim);
+        if (bsi != null) {
+            return bsi;
+        }
 
-    /**
-     *  @param c1 coordinate of first value
-     *  @param c2 coordinate of second value
-     *  @return a new board, with values swapped from first & second coordinates
-     */
-	private Board swap(final Coord c1, final Coord c2) {
-		final byte[] newBoard = _values.clone();
-		newBoard[c1.getBoardPos()] = valueAt(c2);
-		newBoard[c2.getBoardPos()] = valueAt(c1);
-		return new Board(newBoard);
-	}
+        final BoardSizeInfo newBsce = new BoardSizeInfo(values);
+        BOARDSIZEINFO_CACHE.put(dim, newBsce);
+        return newBsce;
+    }
 
-	public static byte[] linearizeMatrixIntoArray(final int[][] valueMatrix) {
+	private static byte[] linearizeMatrix(final int[][] valueMatrix) {
 
 	    if (valueMatrix == null) {
 	        throw new IllegalArgumentException();
@@ -327,5 +331,37 @@ public class Board {
 
         return values;
     }
+
+
+    //
+    //  Private instance methods
+    //
+
+    /**
+     *  @param value value being sought
+     *  @return position where the value was found within the current board,
+     *  or -1 if not found
+     */
+    private int findValuePos(final int value) {
+        for (int pos = 0; pos < _values.length; pos++) {
+            if ((int) _values[pos] == value) {
+                return pos;
+            }
+        }
+        return -1;
+	}
+
+    /**
+     *  @param boardPos position of block with which to swap
+     *  @param offset position-relative offset of the block to swap
+     *  @return a new board, with values swapped from first & second coordinates
+     */
+	private Board createSwappedBoard(final int boardPos, final int offset) {
+		final byte[] newBoard = _values.clone();
+        final byte tmp = newBoard[boardPos];
+        newBoard[boardPos] = newBoard[boardPos + offset];
+        newBoard[boardPos + offset] = tmp;
+		return new Board(newBoard);
+	}
 
 }
