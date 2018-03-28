@@ -89,7 +89,7 @@ public class Board {
 
     private static class BoardSizeInfo {
 
-        final byte[] _manhattanDistances;
+        final short[] _manhattanDistances;
         final byte[] _posToRow;
         final byte[] _posToCol;
         final int _dim;
@@ -100,7 +100,7 @@ public class Board {
         BoardSizeInfo(final byte[] values) {
             final int maxPos = values.length;
             _dim = lookupDim(maxPos);
-            final byte[] manhattanDistances = new byte[maxPos * maxPos];
+            final short[] manhattanDistances = new short[maxPos * maxPos];
             final byte[] posToRow = new byte[maxPos];
             final byte[] posToCol = new byte[maxPos];
             int lhsPosBase = 0;
@@ -110,7 +110,7 @@ public class Board {
                 posToRow[lhsPos] = (byte) lhsRow;
                 posToCol[lhsPos] = (byte) lhsCol;
                 for (int rhsPos = 0; rhsPos < maxPos; rhsPos++) {
-                    manhattanDistances[lhsPosBase + rhsPos] = (byte) (
+                    manhattanDistances[lhsPosBase + rhsPos] = (short) (
                         calculateManhattanDistance(
                             new int[] { lhsRow, lhsCol },
                             new int[] { rhsPos / _dim, rhsPos % _dim }
@@ -177,11 +177,17 @@ public class Board {
 
         int hammingDistance = 0;
         int manhattanDistance = 0;
+
+        final short[] posForValue = new short[_values.length];
+        for (int pos = 0; pos < _values.length; pos++) {
+            posForValue[_values[pos]] = (short) pos;
+        }
         for (int pos = 0; pos < _values.length - 1; pos++) {
-            if (_values[pos] != pos + 1) {
+            final int currentBlockPos = posForValue[pos + 1];
+            if (currentBlockPos != pos) {   // not where it's supposed to be
                 hammingDistance++;
                 manhattanDistance += bsi._manhattanDistances[
-                    pos * _values.length + findValuePos(pos + 1)
+                    pos * _values.length + currentBlockPos
                 ];
             }
         }
