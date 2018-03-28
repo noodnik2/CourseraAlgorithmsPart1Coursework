@@ -343,12 +343,15 @@ public class Board {
      *  @return position where the value was found within the current board
      */
     private int findValuePos(final int value) {
+        final byte byteValue = (byte) value;
         for (int pos = 0; pos < _values.length; pos++) {
-            if ((int) _values[pos] == value) {
+            if (_values[pos] == byteValue) {
                 return pos;
             }
         }
-        throw new IllegalArgumentException();
+        throw new IllegalArgumentException(
+            String.format("value(%s) for maxPos(%s)", value, _values.length)
+        );
     }
 
     /**
