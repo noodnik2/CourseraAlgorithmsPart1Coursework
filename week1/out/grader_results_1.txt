@@ -1,0 +1,153 @@
+See the Assessment Guide for information on how to interpret this report.
+
+ASSESSMENT SUMMARY
+
+Compilation:  PASSED
+API:          PASSED
+
+Findbugs:     FAILED (3 warnings)
+PMD:          PASSED
+Checkstyle:   FAILED (12 errors, 49 warnings)
+
+Correctness:  No tests available for autograding.
+Memory:       No tests available for autograding.
+Timing:       No tests available for autograding.
+
+Aggregate score: 10.00%
+[Compilation: 5%, API: 5%, Findbugs: 0%, PMD: 0%, Checkstyle: 0%, Correctness: 60%, Memory: 10%, Timing: 20%]
+
+ASSESSMENT DETAILS
+
+The following files were submitted:
+----------------------------------
+ 14K Feb 26 04:29 Percolation.java
+3.8K Feb 26 04:29 PercolationStats.java
+
+
+********************************************************************************
+*  COMPILING                                                                    
+********************************************************************************
+
+
+% javac Percolation.java
+*-----------------------------------------------------------
+
+% javac PercolationStats.java
+*-----------------------------------------------------------
+
+
+================================================================
+
+
+Checking the APIs of your programs.
+*-----------------------------------------------------------
+Percolation:
+
+PercolationStats:
+
+================================================================
+
+
+********************************************************************************
+*  CHECKING STYLE AND COMMON BUG PATTERNS                                       
+********************************************************************************
+
+
+% findbugs *.class
+*-----------------------------------------------------------
+M D DRE_DECLARED_RUNTIME_EXCEPTION DRE: Method new PercolationStats(int, int) declares RuntimeException in throws clause  At PercolationStats.java:[lines 28-55]
+L D DRE_DECLARED_RUNTIME_EXCEPTION DRE: Method new Percolation(int) declares RuntimeException in throws clause  At Percolation.java:[lines 167-196]
+M D DRE_DECLARED_RUNTIME_EXCEPTION DRE: Method Percolation.open(int, int) declares RuntimeException in throws clause  At Percolation.java:[lines 213-232]
+Warnings generated: 3
+
+
+================================================================
+
+
+% pmd .
+*-----------------------------------------------------------
+Percolation.java:150: Do not call 'System.exit()' in this course. [DoNotCallSystemExit]
+Percolation.java:365: Instance (and static) variables should be declared at the top of the class, before any method declarations, constructors, or nested classes. [FieldDeclarationsShouldBeAtStartOfClass]
+Percolation.java:368: Instance (and static) variables should be declared at the top of the class, before any method declarations, constructors, or nested classes. [FieldDeclarationsShouldBeAtStartOfClass]
+Percolation.java:371: Instance (and static) variables should be declared at the top of the class, before any method declarations, constructors, or nested classes. [FieldDeclarationsShouldBeAtStartOfClass]
+Percolation.java:374: Instance (and static) variables should be declared at the top of the class, before any method declarations, constructors, or nested classes. [FieldDeclarationsShouldBeAtStartOfClass]
+Percolation.java:377: Instance (and static) variables should be declared at the top of the class, before any method declarations, constructors, or nested classes. [FieldDeclarationsShouldBeAtStartOfClass]
+Percolation.java:385: Instance (and static) variables should be declared at the top of the class, before any method declarations, constructors, or nested classes. [FieldDeclarationsShouldBeAtStartOfClass]
+Percolation.java:388: Instance (and static) variables should be declared at the top of the class, before any method declarations, constructors, or nested classes. [FieldDeclarationsShouldBeAtStartOfClass]
+Percolation.java:391: Instance (and static) variables should be declared at the top of the class, before any method declarations, constructors, or nested classes. [FieldDeclarationsShouldBeAtStartOfClass]
+Percolation.java:394: Instance (and static) variables should be declared at the top of the class, before any method declarations, constructors, or nested classes. [FieldDeclarationsShouldBeAtStartOfClass]
+Percolation.java:397: Instance (and static) variables should be declared at the top of the class, before any method declarations, constructors, or nested classes. [FieldDeclarationsShouldBeAtStartOfClass]
+Percolation.java:400: Instance (and static) variables should be declared at the top of the class, before any method declarations, constructors, or nested classes. [FieldDeclarationsShouldBeAtStartOfClass]
+Percolation.java:403: Instance (and static) variables should be declared at the top of the class, before any method declarations, constructors, or nested classes. [FieldDeclarationsShouldBeAtStartOfClass]
+Percolation.java:406: Instance (and static) variables should be declared at the top of the class, before any method declarations, constructors, or nested classes. [FieldDeclarationsShouldBeAtStartOfClass]
+PercolationStats.java:114: Instance (and static) variables should be declared at the top of the class, before any method declarations, constructors, or nested classes. [FieldDeclarationsShouldBeAtStartOfClass]
+PercolationStats.java:117: Instance (and static) variables should be declared at the top of the class, before any method declarations, constructors, or nested classes. [FieldDeclarationsShouldBeAtStartOfClass]
+PercolationStats.java:120: Instance (and static) variables should be declared at the top of the class, before any method declarations, constructors, or nested classes. [FieldDeclarationsShouldBeAtStartOfClass]
+PercolationStats.java:123: Instance (and static) variables should be declared at the top of the class, before any method declarations, constructors, or nested classes. [FieldDeclarationsShouldBeAtStartOfClass]
+PMD ends with 18 warnings.
+
+
+================================================================
+
+
+% checkstyle *.java
+*-----------------------------------------------------------
+[ERROR] Percolation.java:2:1: Do not import 'java.util.function.BiConsumer' in this course. [IllegalImport]
+[ERROR] Percolation.java:3:1: Do not import 'java.util.function.BiFunction' in this course. [IllegalImport]
+[ERROR] Percolation.java:4:1: Do not import 'java.util.function.IntFunction' in this course. [IllegalImport]
+[ERROR] Percolation.java:5:1: Do not import 'java.util.function.Supplier' in this course. [IllegalImport]
+[ERROR] Percolation.java:150:20: Do not call 'System.exit()' in this course. [IllegalMethodCall]
+[ERROR] Percolation.java:167:9: Do not use the keyword 'throws' in this course. [IllegalToken]
+[ERROR] Percolation.java:211:9: Do not use the keyword 'throws' in this course. [IllegalToken]
+[ERROR] PercolationStats.java:28:9: Do not use the keyword 'throws' in this course. [IllegalToken]
+[WARN] Percolation.java:30:7: The comment is empty. [EmptyComment]
+[WARN] Percolation.java:32:7: The comment is empty. [EmptyComment]
+[WARN] Percolation.java:35:7: The comment is empty. [EmptyComment]
+[WARN] Percolation.java:38:7: The comment is empty. [EmptyComment]
+[WARN] Percolation.java:40:7: The comment is empty. [EmptyComment]
+[WARN] Percolation.java:49:34: ',' is not followed by whitespace. [WhitespaceAfter]
+[WARN] Percolation.java:59:34: Boolean expression can be simplified, e.g., use 'if (!isEmpty)' instead of 'if (isEmpty == false)'. [SimplifyBooleanExpression]
+[WARN] Percolation.java:63:34: Boolean expression can be simplified, e.g., use 'if (!isEmpty)' instead of 'if (isEmpty == false)'. [SimplifyBooleanExpression]
+[WARN] Percolation.java:67:38: Boolean expression can be simplified, e.g., use 'if (!isEmpty)' instead of 'if (isEmpty == false)'. [SimplifyBooleanExpression]
+[WARN] Percolation.java:154:7: The comment is empty. [EmptyComment]
+[WARN] Percolation.java:156:7: The comment is empty. [EmptyComment]
+[WARN] Percolation.java:166:5: Define constructors after static and instance variables but before methods. [DeclarationOrder]
+[WARN] Percolation.java:199:7: The comment is empty. [EmptyComment]
+[WARN] Percolation.java:201:7: The comment is empty. [EmptyComment]
+[WARN] Percolation.java:290:7: The comment is empty. [EmptyComment]
+[WARN] Percolation.java:292:7: The comment is empty. [EmptyComment]
+[WARN] Percolation.java:360:7: The comment is empty. [EmptyComment]
+[WARN] Percolation.java:362:7: The comment is empty. [EmptyComment]
+[WARN] Percolation.java:365:5: Declare instance variables after static variables but before constructors and methods. [DeclarationOrder]
+[WARN] Percolation.java:365:23: The instance variable '_edgeLength' must start with a lowercase letter and use camelCase. [MemberName]
+[WARN] Percolation.java:368:5: Declare instance variables after static variables but before constructors and methods. [DeclarationOrder]
+[WARN] Percolation.java:368:29: The instance variable '_pSiteOpen' must start with a lowercase letter and use camelCase. [MemberName]
+[WARN] Percolation.java:371:5: Declare instance variables after static variables but before constructors and methods. [DeclarationOrder]
+[WARN] Percolation.java:371:17: The instance variable '_nOpenSites' must start with a lowercase letter and use camelCase. [MemberName]
+[WARN] Percolation.java:374:5: Declare instance variables after static variables but before constructors and methods. [DeclarationOrder]
+[WARN] Percolation.java:374:40: The instance variable '_ufPerc' must start with a lowercase letter and use camelCase. [MemberName]
+[WARN] Percolation.java:377:5: Declare instance variables after static variables but before constructors and methods. [DeclarationOrder]
+[WARN] Percolation.java:377:40: The instance variable '_ufFull' must start with a lowercase letter and use camelCase. [MemberName]
+[WARN] Percolation.java:380:7: The comment is empty. [EmptyComment]
+[WARN] Percolation.java:382:7: The comment is empty. [EmptyComment]
+[WARN] Percolation.java:385:5: Declare static variables before instance variables, constructors, and methods. [DeclarationOrder]
+...
+Checkstyle ends with 8 errors and 48 warnings.
+
+% custom checkstyle checks for Percolation.java
+*-----------------------------------------------------------
+[ERROR] Percolation.java:2:1: Do not import 'java.util.function.BiConsumer' in this program. [IllegalImport]
+[ERROR] Percolation.java:3:1: Do not import 'java.util.function.BiFunction' in this program. [IllegalImport]
+[ERROR] Percolation.java:4:1: Do not import 'java.util.function.IntFunction' in this program. [IllegalImport]
+[ERROR] Percolation.java:5:1: Do not import 'java.util.function.Supplier' in this program. [IllegalImport]
+[WARN] Percolation.java:406:40: The numeric literal '4' appears to be unnecessary. [NumericLiteral]
+Checkstyle ends with 4 errors and 1 warning.
+
+% custom checkstyle checks for PercolationStats.java
+*-----------------------------------------------------------
+
+
+================================================================
+
+
+ABORTING: you must fix any Checkstyle errors (not warnings).
