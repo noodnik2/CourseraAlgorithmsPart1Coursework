@@ -90,14 +90,7 @@ public class Board {
         final int _dim;
 
         static final int MAX_BOARD_SIZE = 128;
-        private static final int[] BOARDSIZE2DIM;
-
-        static {
-            BOARDSIZE2DIM = new int[MAX_BOARD_SIZE];
-            for (int i = 0; i < BOARDSIZE2DIM.length; i++) {
-                BOARDSIZE2DIM[i] = i * i;
-            }
-        }
+        private static final int[] BOARDSIZE2DIM = newBoardSize2Dim();
 
         BoardSizeInfo(final byte[] values) {
             final int maxPos = values.length;
@@ -149,6 +142,14 @@ public class Board {
                 distance += Math.abs(lhsRowCol[axis] - rhsRowCol[axis]);
             }
             return distance;
+        }
+
+        private static int[] newBoardSize2Dim() {
+            final int[] boardsize2Dim = new int[MAX_BOARD_SIZE];
+            for (int i = 0; i < boardsize2Dim.length; i++) {
+                boardsize2Dim[i] = i * i;
+            }
+            return boardsize2Dim;
         }
 
     }

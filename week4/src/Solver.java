@@ -48,11 +48,13 @@ public class Solver {
     private static class Node {
         private final Board board;
         private final Node prev;
-        private final int moves;
-        Node(Board board, Node prev, int moves) {
+        private final short moves;
+        private final boolean isTwin;
+        Node(Board board, Node prev, int moves, boolean isTwin) {
             this.board = board;
             this.prev = prev;
-            this.moves = moves;
+            this.moves = (short) moves;
+            this.isTwin = isTwin;
         }
 
     }
@@ -71,7 +73,7 @@ public class Solver {
                 return lhsNodeCost - rhsNodeCost;
             }
         );
-        solveWith(initial, manhattanComparator);
+        solution = getSolution(initial, manhattanComparator);
     }
 
     /**
@@ -148,61 +150,32 @@ public class Solver {
         return node.moves + node.board.manhattan();
     }
 
-    private void solveWith(Board initial, Comparator<Node> comparator) {
+    private Node getSolution(Board initial, Comparator<Node> comparator) {
 
-        final MinPQ<Node> mainPq = new MinPQ<>(comparator);
-        mainPq.insert(new Node(initial, null, 0));
-
-        final MinPQ<Node> twinPq = new MinPQ<>(comparator);
-        twinPq.insert(new Node(initial.twin(), null, 0));
+        final MinPQ<Node> minPq = new MinPQ<>(comparator);
+        minPq.insert(new Node(initial, null, 0, false));
+        minPq.insert(new Node(initial.twin(), null, 0, true));
 
         while(true) {
 
-            assert !mainPq.isEmpty() && !twinPq.isEmpty();
-
-//            printProgress(pqInitial);
-
-            solution = walkTowardSolution(mainPq);
-            if (solution != null) {
-                break;
+            final Node curNode = minPq.delMin();
+            if (curNode.board.isGoal()) {
+                if (curNode.isTwin) {
+                    StdOut.println("unsolveable");
+                    return null;
+                }
+                return curNode;
             }
 
-            if (walkTowardSolution(twinPq) != null) {
-                StdOut.println("unsolveable");
-                solution = null;
-                break;
+            for (final Board n : curNode.board.neighbors()) {
+                if (curNode.prev == null || !n.equals(curNode.prev.board)) {
+                    minPq.insert(
+                        new Node(n, curNode, curNode.moves + 1, curNode.isTwin)
+                    );
+                }
             }
-
         }
 
     }
-
-    private Node walkTowardSolution(final MinPQ<Node> minPq) {
-
-        assert !minPq.isEmpty();
-
-        final Node curNode = minPq.delMin();
-        if (curNode.board.isGoal()) {
-            return curNode;
-        }
-
-        for (final Board n : curNode.board.neighbors()) {
-            if (curNode.prev == null || !n.equals(curNode.prev.board)) {
-                minPq.insert(new Node(n, curNode, curNode.moves + 1));
-            }
-        }
-        return null;
-    }
-
-//    private void printProgress(MinPQ<Node> pqInitial) {
-//        StdOut.println("pass");
-//        for (
-//            final Iterator<Node> nodeIterator = pqInitial.iterator();
-//            nodeIterator.hasNext();
-//        ) {
-//            final Node node = nodeIterator.next();
-//            StdOut.printf("node(%s)\n", node.board);
-//        }
-//    }
 
 }
