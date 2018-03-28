@@ -1,3 +1,4 @@
+# Week4 Assignment: 8 Puzzle
 ## Specification
 Here is the programming assignment [specification](http://coursera.cs.princeton.edu/algs4/assignments/8puzzle.html) that describes the assignment requirements.
 
