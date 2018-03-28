@@ -80,11 +80,11 @@ import java.util.Map;
  */
 public class Board {
 
-	private final int _hashCode;
-	private final byte[] _values;
+    private final int _hashCode;
+    private final byte[] _values;
 
-	private final int _hammingDistance;
-	private final int _manhattanDistance;
+    private final int _hammingDistance;
+    private final int _manhattanDistance;
 
     private static class BoardSizeInfo {
 
@@ -231,9 +231,9 @@ public class Board {
      */
     public boolean equals(final Object boardObject) {
         if (!(boardObject instanceof Board)) {
-			return false;
-		}
-		return Arrays.equals(_values, ((Board) boardObject)._values);
+            return false;
+        }
+        return Arrays.equals(_values, ((Board) boardObject)._values);
     }
 
     public int hashCode() {
@@ -310,10 +310,10 @@ public class Board {
         return newBsce;
     }
 
-	private static byte[] linearizeMatrix(final int[][] valueMatrix) {
+    private static byte[] linearizeMatrix(final int[][] valueMatrix) {
 
-	    if (valueMatrix == null) {
-	        throw new IllegalArgumentException();
+        if (valueMatrix == null) {
+            throw new IllegalArgumentException();
         }
 
         final int size = valueMatrix.length;
@@ -349,19 +349,19 @@ public class Board {
             }
         }
         return -1;
-	}
+    }
 
     /**
      *  @param boardPos position of block with which to swap
      *  @param offset position-relative offset of the block to swap
      *  @return a new board, with values swapped from first & second coordinates
      */
-	private Board createSwappedBoard(final int boardPos, final int offset) {
-		final byte[] newBoard = _values.clone();
+    private Board createSwappedBoard(final int boardPos, final int offset) {
+        final byte[] newBoard = _values.clone();
         final byte tmp = newBoard[boardPos];
         newBoard[boardPos] = newBoard[boardPos + offset];
         newBoard[boardPos + offset] = tmp;
-		return new Board(newBoard);
-	}
+        return new Board(newBoard);
+    }
 
 }
