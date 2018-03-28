@@ -1,8 +1,6 @@
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  *  Princeton/Coursera Algorithms Part 1
@@ -17,11 +15,11 @@ import java.util.Map;
  *  <pre>
  *      public class Board {
  *
- *          // construct a _values from an n-by-n array of blocks
+ *          // construct a board from an n-by-n array of blocks
  *          // (where blocks[_row][_col] = block in row _row, column _col)
  *          public Board(int[][] blocks)
  *
- *          // _values dimension n
+ *          // board dimension n
  *          public int dimension()
  *
  *          // number of blocks out of placebelow)
@@ -30,19 +28,19 @@ import java.util.Map;
  *          // sum of Manhattan distances between blocks and goal
  *          public int manhattan()
  *
- *          // is this _values the goal _values?
+ *          // is this the goal board?
  *          public boolean isGoal()
  *
- *          // a _values that is obtained by exchanging any pair of blocks
+ *          // a board that is obtained by exchanging any pair of blocks
  *          public Board twin()
  *
- *          // does this _values equal y?below)
+ *          // does this board equal y?
  *          public boolean equals(Object y)
  *
  *          // all neighboring boards
  *          public Iterable<Board> neighbors()
  *
- *          // string representation of this _values (in the output format specified below)
+ *          // string representation of this board (in specified output format)
  *          public String toString()
  *
  *          // unit tests (not graded)
@@ -75,16 +73,14 @@ import java.util.Map;
  *            0  1  3
  *            4  2  5
  *            7  8  6
- *  </pre>_values
+ *  </pre>
  *  @author Marty Ross
  */
 public class Board {
 
-    private final int _hashCode;
     private final byte[] _values;
-
-    private final int _hammingDistance;
-    private final int _manhattanDistance;
+    private final short _hammingDistance;
+    private final short _manhattanDistance;
 
     private static class BoardSizeInfo {
 
@@ -93,7 +89,15 @@ public class Board {
         final byte[] _posToCol;
         final int _dim;
 
-        private static final int[] BOARD_SIZES = { 1, 4, 9, 16, 25, 36, 49 };
+        static final int MAX_BOARD_SIZE = 128;
+        private static final int[] BOARDSIZE2DIM;
+
+        static {
+            BOARDSIZE2DIM = new int[MAX_BOARD_SIZE];
+            for (int i = 0; i < BOARDSIZE2DIM.length; i++) {
+                BOARDSIZE2DIM[i] = i * i;
+            }
+        }
 
         BoardSizeInfo(final byte[] values) {
             final int maxPos = values.length;
@@ -123,12 +127,12 @@ public class Board {
         }
 
         static int lookupDim(final int maxPos) {
-            for (int i = 0; i < BOARD_SIZES.length; i++) {
-                if (BOARD_SIZES[i] == maxPos) {
-                    return i + 1;
+            for (int i = 0; i < BOARDSIZE2DIM.length; i++) {
+                if (BOARDSIZE2DIM[i] == maxPos) {
+                    return i;
                 }
             }
-            throw new IllegalArgumentException();
+            return (int) Math.sqrt(maxPos);
         }
 
         /**
@@ -150,8 +154,9 @@ public class Board {
     }
 
     /** cache of information regarding a given board size */
-    private static final Map<Integer, BoardSizeInfo> BOARDSIZEINFO_CACHE
-        = new HashMap<>();
+    private static final BoardSizeInfo[] BOARDSIZEINFO_CACHE = (
+        new BoardSizeInfo[BoardSizeInfo.MAX_BOARD_SIZE]
+    );
 
     /**
      *  @param valueMatrix matrix of board values
@@ -166,7 +171,6 @@ public class Board {
     private Board(final byte[] values) {
 
         _values = values;
-        _hashCode = Arrays.hashCode(_values);
 
         final BoardSizeInfo bsi = getBoardSizeInfo(_values);
 
@@ -181,8 +185,8 @@ public class Board {
             }
         }
 
-        _hammingDistance = hammingDistance;
-        _manhattanDistance = manhattanDistance;
+        _hammingDistance = (short) hammingDistance;
+        _manhattanDistance = (short) manhattanDistance;
 
     }
 
@@ -234,10 +238,6 @@ public class Board {
             return false;
         }
         return Arrays.equals(_values, ((Board) boardObject)._values);
-    }
-
-    public int hashCode() {
-        return _hashCode;
     }
 
     /**
@@ -300,13 +300,13 @@ public class Board {
 
         final int dim = BoardSizeInfo.lookupDim(values.length);
 
-        final BoardSizeInfo bsi = BOARDSIZEINFO_CACHE.get(dim);
+        final BoardSizeInfo bsi = BOARDSIZEINFO_CACHE[dim];
         if (bsi != null) {
             return bsi;
         }
 
         final BoardSizeInfo newBsce = new BoardSizeInfo(values);
-        BOARDSIZEINFO_CACHE.put(dim, newBsce);
+        BOARDSIZEINFO_CACHE[dim] = newBsce;
         return newBsce;
     }
 
