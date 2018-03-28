@@ -43,15 +43,19 @@ import java.util.Comparator;
  */
 public class Solver {
 
-    private Node solution;
+    private final Node solution;
 
     private static class Node {
         private final Board board;
         private final Node prev;
+        private final int manhattanDistance;
+        private final int hammingDistance;
         private final short moves;
         private final boolean isTwin;
         Node(Board board, Node prev, int moves, boolean isTwin) {
             this.board = board;
+            this.manhattanDistance = board.manhattan();
+            this.hammingDistance = board.hamming();
             this.prev = prev;
             this.moves = (short) moves;
             this.isTwin = isTwin;
@@ -68,7 +72,7 @@ public class Solver {
                 final int lhsNodeCost = getCost(lhsNode);
                 final int rhsNodeCost = getCost(rhsNode);
                 if (lhsNodeCost == rhsNodeCost) {
-                    return lhsNode.board.hamming() - rhsNode.board.hamming();
+                    return lhsNode.hammingDistance - rhsNode.hammingDistance;
                 }
                 return lhsNodeCost - rhsNodeCost;
             }
@@ -147,10 +151,14 @@ public class Solver {
     }
 
     private int getCost(final Node node) {
-        return node.moves + node.board.manhattan();
+        return node.moves + node.manhattanDistance;
     }
 
     private Node getSolution(Board initial, Comparator<Node> comparator) {
+
+        if (initial == null || comparator == null) {
+            throw new IllegalArgumentException();
+        }
 
         final MinPQ<Node> minPq = new MinPQ<>(comparator);
         minPq.insert(new Node(initial, null, 0, false));

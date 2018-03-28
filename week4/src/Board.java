@@ -79,8 +79,13 @@ import java.util.List;
 public class Board {
 
     private final byte[] _values;
-    private final short _hammingDistance;
-    private final short _manhattanDistance;
+    private final int _hammingDistance;
+    private final int _manhattanDistance;
+
+    /** cache of information regarding a given board size */
+    private static final BoardSizeInfo[] BOARDSIZEINFO_CACHE = (
+        new BoardSizeInfo[BoardSizeInfo.MAX_BOARD_SIZE]
+    );
 
     private static class BoardSizeInfo {
 
@@ -145,7 +150,7 @@ public class Board {
         }
 
         private static int[] newBoardSize2Dim() {
-            final int[] boardsize2Dim = new int[MAX_BOARD_SIZE];
+            final int[] boardsize2Dim = new int[MAX_BOARD_SIZE + 1];
             for (int i = 0; i < boardsize2Dim.length; i++) {
                 boardsize2Dim[i] = i * i;
             }
@@ -153,11 +158,6 @@ public class Board {
         }
 
     }
-
-    /** cache of information regarding a given board size */
-    private static final BoardSizeInfo[] BOARDSIZEINFO_CACHE = (
-        new BoardSizeInfo[BoardSizeInfo.MAX_BOARD_SIZE]
-    );
 
     /**
      *  @param valueMatrix matrix of board values
@@ -186,8 +186,8 @@ public class Board {
             }
         }
 
-        _hammingDistance = (short) hammingDistance;
-        _manhattanDistance = (short) manhattanDistance;
+        _hammingDistance = hammingDistance;
+        _manhattanDistance = manhattanDistance;
 
     }
 
@@ -340,8 +340,7 @@ public class Board {
 
     /**
      *  @param value value being sought
-     *  @return position where the value was found within the current board,
-     *  or -1 if not found
+     *  @return position where the value was found within the current board
      */
     private int findValuePos(final int value) {
         for (int pos = 0; pos < _values.length; pos++) {
@@ -349,7 +348,7 @@ public class Board {
                 return pos;
             }
         }
-        return -1;
+        throw new IllegalArgumentException();
     }
 
     /**
