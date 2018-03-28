@@ -78,7 +78,7 @@ import java.util.List;
  */
 public class Board {
 
-    private final byte[] _values;
+    private final short[] _values;
     private final int _hammingDistance;
     private final int _manhattanDistance;
 
@@ -97,7 +97,7 @@ public class Board {
         static final int MAX_BOARD_SIZE = 128;
         private static final int[] BOARDSIZE2DIM = newBoardSize2Dim();
 
-        BoardSizeInfo(final byte[] values) {
+        BoardSizeInfo(final short[] values) {
             final int maxPos = values.length;
             _dim = lookupDim(maxPos);
             final short[] manhattanDistances = new short[maxPos * maxPos];
@@ -169,7 +169,7 @@ public class Board {
     /**
      *  @param values array of board values
      */
-    private Board(final byte[] values) {
+    private Board(final short[] values) {
 
         _values = values;
 
@@ -303,7 +303,7 @@ public class Board {
     /**
      *  @return information about the current board based upon its size
      */
-    private static BoardSizeInfo getBoardSizeInfo(final byte[] values) {
+    private static BoardSizeInfo getBoardSizeInfo(final short[] values) {
 
         final int dim = BoardSizeInfo.lookupDim(values.length);
 
@@ -317,14 +317,14 @@ public class Board {
         return newBsce;
     }
 
-    private static byte[] linearizeMatrix(final int[][] valueMatrix) {
+    private static short[] linearizeMatrix(final int[][] valueMatrix) {
 
         if (valueMatrix == null) {
             throw new IllegalArgumentException();
         }
 
         final int size = valueMatrix.length;
-        final byte[] values = new byte[size * size];
+        final short[] values = new short[size * size];
 
         int boardPos = 0;
         for (final int[] valueMatrixRow : valueMatrix) {
@@ -332,7 +332,7 @@ public class Board {
                 throw new IllegalArgumentException();
             }
             for (int col = 0; col < size; col++) {
-                values[boardPos++] = (byte) valueMatrixRow[col];
+                values[boardPos++] = (short) valueMatrixRow[col];
             }
         }
 
@@ -349,9 +349,8 @@ public class Board {
      *  @return position where the value was found within the current board
      */
     private int findValuePos(final int value) {
-        final byte byteValue = (byte) value;
         for (int pos = 0; pos < _values.length; pos++) {
-            if (_values[pos] == byteValue) {
+            if (_values[pos] == value) {
                 return pos;
             }
         }
@@ -366,8 +365,8 @@ public class Board {
      *  @return a new board, with values swapped from first & second coordinates
      */
     private Board createSwappedBoard(final int boardPos, final int offset) {
-        final byte[] newBoard = _values.clone();
-        final byte tmp = newBoard[boardPos];
+        final short[] newBoard = _values.clone();
+        final short tmp = newBoard[boardPos];
         newBoard[boardPos] = newBoard[boardPos + offset];
         newBoard[boardPos + offset] = tmp;
         return new Board(newBoard);
